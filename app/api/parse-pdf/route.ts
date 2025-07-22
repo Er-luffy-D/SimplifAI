@@ -1,8 +1,16 @@
 import axios from "axios";
 import { NextRequest } from "next/server";
 import pdfParse from "pdf-parse";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+	if (!session || !session.user?.email) 
+	{
+		return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+	}
 	const formData = await req.formData();
 	const file = formData.get("file") as File | null;
 	const fileType = formData.get("type") as string | null;
@@ -143,6 +151,22 @@ ${textContent}`;
 			} catch (jsonParseErr) {
 				console.warn("Could not extract clean JSON:", jsonParseErr);
 			}
+
+			const user = await prisma.user.findUnique({
+				where: { email: session.user.email! },
+				});
+
+				if (!user) {
+					return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
+				}
+
+				await prisma.parsedDocument.create({
+					data: {
+						docName: file.name,
+						content: JSON.stringify(jsonOnly),
+						userId: user.id,
+					},
+				});
 
 			return new Response(JSON.stringify({ result: jsonOnly }), {
 				headers: { "Content-Type": "application/json" },

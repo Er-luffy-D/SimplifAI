@@ -23,6 +23,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  parsedDocs    ParsedDocument[] 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,4 +66,13 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model ParsedDocument {
+  id        String   @id @default(cuid())
+  docName   String
+  content   String
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -6,8 +6,11 @@ import { Brain, Users, Target, Award, Lightbulb, Heart, Globe, Zap, Sparkles, Ro
 import Link from "next/link";
 import { useState } from "react";
 import MobileMenu from "@/components/MobileMenu";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 export default function AboutPage() {
+	const stats = useSelector((state: RootState) => state.stats);
 	const team = [
 		{
 			name: "Piyush Dixit",
@@ -146,13 +149,13 @@ export default function AboutPage() {
 					<div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 animate-fade-in-up animation-delay-400">
 						{[
 							{
-								number: "1K+",
+								number: stats.totalUsers.toLocaleString(),
 								label: "Active Users",
 								icon: <Users className="w-6 h-6" />,
 								gradient: "from-blue-400 to-cyan-400",
 							},
 							{
-								number: "2M+",
+								number: stats.totalParsedDocuments.toLocaleString(),
 								label: "Documents Processed",
 								icon: <Brain className="w-6 h-6" />,
 								gradient: "from-green-400 to-emerald-400",

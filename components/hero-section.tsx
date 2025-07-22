@@ -2,11 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Sparkles, Brain, Rocket } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 export function HeroSection() {
 	const handleGetStarted = () => {
 		window.location.href = "/signin";
 	};
+	const stats = useSelector((state: RootState) => state.stats);
 	const user = useSession().data?.user;
 	return (
 		<div className="relative bg-gradient-to-br from-primary/10 via-purple-50/50 to-pink-50/30 dark:from-primary/5 dark:via-purple-950/20 dark:to-pink-950/10 pt-20 pb-16 overflow-hidden">
@@ -71,11 +74,11 @@ export function HeroSection() {
 				{/* Floating stats */}
 				<div className="flex justify-center gap-8 mt-16 animate-fade-in-up animation-delay-600">
 					<div className="text-center group hover:scale-110 transition-all duration-300">
-						<div className="text-2xl font-bold text-gradient-blue-cyan">10K+</div>
+						<div className="text-2xl font-bold text-gradient-blue-cyan">{stats.totalParsedDocuments.toLocaleString()}</div>
 						<div className="text-sm text-muted-foreground">Documents Processed</div>
 					</div>
 					<div className="text-center group hover:scale-110 transition-all duration-300">
-						<div className="text-2xl font-bold text-gradient-green-emerald">50K+</div>
+						<div className="text-2xl font-bold text-gradient-green-emerald">{stats.totalFlashcards.toLocaleString()}</div>
 						<div className="text-sm text-muted-foreground">Flashcards Created</div>
 					</div>
 					<div className="text-center group hover:scale-110 transition-all duration-300">

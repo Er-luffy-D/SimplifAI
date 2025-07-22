@@ -37,4 +37,5 @@ export function Toast({
 			</button>
 		</div>
 	);
+
 }

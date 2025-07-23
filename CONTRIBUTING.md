@@ -30,7 +30,7 @@ git checkout -b user-name/my-feature
 - Add tests if applicable.
 - Update documentation if your changes require it.
 
-### 5. Run Lint & Tests
+### 5. Run Build, Lint & Tests
 
 Make sure your code passes linting and tests.
 
@@ -40,6 +40,9 @@ npm install
 
 # run lint
 npm lint
+
+# build the project
+npm run build
 
 ```
 

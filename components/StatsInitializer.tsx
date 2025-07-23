@@ -6,22 +6,21 @@ import { setStats } from "../lib/store/slices/statsSlice";
 import axios from "axios";
 
 export default function StatsInitializer() {
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    useEffect(() => {
+  useEffect(() => {
+    // Fetch stats once on mount
     const fetchStats = async () => {
-        try {
+      try {
         const res = await axios.get("/api/stats");
         dispatch(setStats(res.data));
-        } catch (err) {
+      } catch (err) {
         console.error("Failed to fetch stats:", err);
-        }
+      }
     };
 
-    fetchStats(); // initial fetch
+    fetchStats();
+  }, [dispatch]);
 
-}, []);
-
-
-	return null; 
+  return null;
 }

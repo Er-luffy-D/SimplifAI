@@ -6,8 +6,11 @@ import { Check, Star, Zap, Crown, Rocket, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import MobileMenu from "@/components/MobileMenu";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 export default function PricingPage() {
+	const stats = useSelector((state: RootState) => state.stats);
 	const plans = [
 		{
 			name: "Free",
@@ -178,7 +181,7 @@ export default function PricingPage() {
 					<div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 animate-fade-in-up animation-delay-400">
 						<div className="text-center group">
 							<div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform duration-300">
-								50K+
+								{stats.totalParsedDocuments.toLocaleString()}
 							</div>
 							<div className="text-gray-500 text-sm">Documents Processed</div>
 						</div>
@@ -190,7 +193,7 @@ export default function PricingPage() {
 						</div>
 						<div className="text-center group">
 							<div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform duration-300">
-								15K+
+								{stats.totalUsers.toLocaleString()}
 							</div>
 							<div className="text-gray-500 text-sm">Happy Users</div>
 						</div>

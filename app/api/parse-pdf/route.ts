@@ -1,13 +1,11 @@
 import axios from "axios";
 import { NextRequest } from "next/server";
 import pdfParse from "pdf-parse";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
-
+import { getToken } from "next-auth/jwt";
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-	if (!session || !session.user?.email) 
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+	if (!token) 
 	{
 		return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
 	}
@@ -153,7 +151,7 @@ ${textContent}`;
 			}
 
 			const user = await prisma.user.findUnique({
-				where: { email: session.user.email! },
+				where: { email: token.email! },
 				});
 
 				if (!user) {

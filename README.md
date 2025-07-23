@@ -65,7 +65,6 @@ Copy `.env.example` to `.env` and fill in the required secrets:
 # 🔧 Environment Variables
 
 # 🔐 AI Configuration
-## These values are required to connect with OpenRouter or DeepSeek for AI-powered responses.
 # API key from OpenRouter
 AI_API_KEY="your_openrouter_or_deepseek_api_key"  
 # Base URL for chat completions
@@ -74,7 +73,6 @@ NEXT_PUBLIC_AI_URL="https://openrouter.ai/api/v1/chat/completions"
 NEXT_PUBLIC_BACKEND_URL="http://localhost:3000"
 
 # 🔐 Auth Configuration
-## Used for user authentication via Google OAuth and session encryption.
 # Can be generated using openssl (e.g., openssl rand -base64 32)
 AUTH_SECRET="your_random_auth_secret" 
 # Google OAuth Client ID
@@ -83,12 +81,9 @@ GOOGLE_CLIENT_ID="your_google_oauth_client_id"
 GOOGLE_CLIENT_SECRET="your_google_oauth_client_secret"
 
 # 🗄️ Database
-## Your Prisma connection strings for database access and connection pooling.
 ## Transaction pooler
-# Main connection string for Prisma client
 DATABASE_URL="postgresql://username:password@host:port/dbname" 
 ## Session pooler
-# Used by Prisma for direct database access 
 DIRECT_URL="postgresql://username:password@host:port/dbname"    
 
 # 🔑 Other Secrets (omnidim chatbot)

@@ -1,4 +1,4 @@
-import { BookOpen, FileText, FileType2, ListChecks, MessageSquare } from "lucide-react";
+import { BookOpen, FileText, FileType2, ListChecks, MessageSquare, TrendingUp } from "lucide-react";
 import React from "react";
 
 export function Features() {
@@ -37,6 +37,13 @@ export function Features() {
 			description: "Easily upload and process PDF and TXT files (DOCX support coming soon)",
 			bgGradient: "bg-indigo-500/10",
 			textColor: "text-indigo-500",
+		},
+		{
+			icon: <TrendingUp />,
+			title: "Progress Tracking",
+			description: "Monitor your learning journey with detailed analytics and performance insights",
+			bgGradient: "bg-rose-500/10",
+			textColor: "text-rose-500",
 		},
 	];
 

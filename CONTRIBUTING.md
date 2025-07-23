@@ -36,10 +36,10 @@ Make sure your code passes linting and tests.
 
 ```bash
 # install dependencies
-npm install
+npm run install
 
 # run lint
-npm lint
+npm run lint
 
 # build the project
 npm run build

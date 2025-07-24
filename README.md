@@ -139,6 +139,16 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) (or open an issue to discuss your 
 
 ---
 
+
+## 🐳 Run Locally with Docker
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Gargibajpai/SimplifAI.git
+cd SimplifAI
+
+
 ## 📄 License
 
 MIT License. See [LICENSE](LICENSE).

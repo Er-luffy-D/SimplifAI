@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, FileText, Share2, Download, FileJson, Braces, MoreVertical } from "lucide-react";
+import { ArrowLeft, FileText, Share2, Braces, MoreVertical } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import jsPDF from "jspdf";
@@ -228,7 +228,7 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 			yPosition += Math.ceil(quizData.length / cols) * 15 + 10;
 		}
 
-		const pageCount = (pdf as any).internal.getNumberOfPages();
+		const pageCount = pdf.getNumberOfPages();
 		for (let i = 1; i <= pageCount; i++) {
 			pdf.setPage(i);
 			pdf.setFontSize(8);

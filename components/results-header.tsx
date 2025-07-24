@@ -1,13 +1,35 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, FileText, Share2 } from "lucide-react";
+import { ArrowLeft, FileText, Share2, Download, FileJson, Braces } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import jsPDF from "jspdf";
+
+interface MainPoint {
+  keyPoint: string;
+}
+
+interface Recommendation {
+  statement: string;
+}
+
+interface SummaryData {
+  mainPoints: MainPoint[];
+  keyInsights: string;
+  recommendations: Recommendation[];
+}
+
+interface QuizItem {
+  question: string;
+  options: string[];
+  correct: number;
+}
 
 export function ResultsHeader({ fileName }: { fileName: string }) {
 	const data = useSelector((state: RootState) => state.parse);
-	const handleExport = () => {
+
+	const handleExportJSON = () => {
 		if (!data) return;
 		const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
 		const url = URL.createObjectURL(blob);
@@ -18,6 +40,197 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
+	};
+
+	const handleExportPDF = () => {
+		if (!data || !data.summary) return;
+
+		const pdf = new jsPDF();
+		const pageWidth = pdf.internal.pageSize.getWidth();
+		const margin = 20;
+		const maxWidth = pageWidth - 2 * margin;
+		let yPosition = 30;
+
+		pdf.setFont("helvetica");
+
+
+		pdf.setFontSize(20);
+		pdf.setFont("helvetica", "bold");
+		pdf.text("SimplifAI Summary Report", margin, yPosition);
+		yPosition += 15;
+
+		pdf.setFontSize(10);
+		pdf.setFont("helvetica", "normal");
+		const currentDate = new Date().toLocaleString();
+		pdf.text(`Generated on: ${currentDate}`, margin, yPosition);
+		yPosition += 10;
+		pdf.setFont("helvetica", "bold");
+		pdf.text(`Document: ${fileName}`, margin, yPosition);
+		yPosition += 20;
+
+		const summaryData = data.summary as SummaryData;
+
+		pdf.setFontSize(16);
+		pdf.setFont("helvetica", "bold");
+		pdf.text("Main Points", margin, yPosition);
+		yPosition += 10;
+
+		pdf.setFontSize(11);
+		pdf.setFont("helvetica", "normal");
+		
+		if (summaryData.mainPoints && Array.isArray(summaryData.mainPoints)) {
+			summaryData.mainPoints.forEach((point: MainPoint, index: number) => {
+				if (yPosition > 270) { 
+					pdf.addPage();
+					yPosition = 30;
+				}
+				
+				const pointText = `${index + 1}. ${point.keyPoint}`;
+				const lines = pdf.splitTextToSize(pointText, maxWidth - 10);
+				pdf.text(lines, margin + 5, yPosition);
+				yPosition += lines.length * 5 + 3;
+			});
+		}
+
+		yPosition += 10;
+
+		if (yPosition > 250) {
+			pdf.addPage();
+			yPosition = 30;
+		}
+
+		pdf.setFontSize(16);
+		pdf.setFont("helvetica", "bold");
+		pdf.text("Key Insights", margin, yPosition);
+		yPosition += 10;
+
+		pdf.setFontSize(11);
+		pdf.setFont("helvetica", "normal");
+		
+		if (summaryData.keyInsights) {
+			const insightLines = pdf.splitTextToSize(summaryData.keyInsights, maxWidth);
+			pdf.text(insightLines, margin, yPosition);
+			yPosition += insightLines.length * 5 + 10;
+		}
+
+		if (yPosition > 250) {
+			pdf.addPage();
+			yPosition = 30;
+		}
+
+		pdf.setFontSize(16);
+		pdf.setFont("helvetica", "bold");
+		pdf.text("Recommendations", margin, yPosition);
+		yPosition += 10;
+
+		pdf.setFontSize(11);
+		pdf.setFont("helvetica", "normal");
+		
+		if (summaryData.recommendations && Array.isArray(summaryData.recommendations)) {
+			summaryData.recommendations.forEach((recommendation: Recommendation, index: number) => {
+				if (yPosition > 270) {
+					pdf.addPage();
+					yPosition = 30;
+				}
+				
+				const recText = `${index + 1}. ${recommendation.statement}`;
+				const lines = pdf.splitTextToSize(recText, maxWidth - 10);
+				pdf.text(lines, margin + 5, yPosition);
+				yPosition += lines.length * 5 + 3;
+			});
+		}
+
+		const quizData = data.quiz as QuizItem[];
+		if (quizData && Array.isArray(quizData) && quizData.length > 0) {
+			pdf.addPage();
+			yPosition = 30;
+
+			pdf.setFontSize(16);
+			pdf.setFont("helvetica", "bold");
+			pdf.text("Get Yourself Tested", margin, yPosition);
+			yPosition += 15;
+
+			pdf.setFontSize(11);
+			pdf.setFont("helvetica", "normal");
+
+			quizData.forEach((quiz: QuizItem, index: number) => {
+				if (yPosition > 240) {
+					pdf.addPage();
+					yPosition = 30;
+				}
+
+				pdf.setFont("helvetica", "bold");
+				const questionText = `${index + 1}. ${quiz.question}`;
+				const questionLines = pdf.splitTextToSize(questionText, maxWidth);
+				pdf.text(questionLines, margin, yPosition);
+				yPosition += questionLines.length * 5 + 5;
+
+				pdf.setFont("helvetica", "normal");
+				quiz.options.forEach((option: string, optionIndex: number) => {
+					if (yPosition > 275) {
+						pdf.addPage();
+						yPosition = 30;
+					}
+					
+					const optionText = `   ${String.fromCharCode(65 + optionIndex)}. ${option}`;
+					const optionLines = pdf.splitTextToSize(optionText, maxWidth - 10);
+					pdf.text(optionLines, margin + 5, yPosition);
+					yPosition += optionLines.length * 4 + 2;
+				});
+
+				yPosition += 5;
+			});
+
+			pdf.addPage();
+			yPosition = 30;
+
+			pdf.setFontSize(16);
+			pdf.setFont("helvetica", "bold");
+			pdf.text("Answer Key", margin, yPosition);
+			yPosition += 15;
+
+			pdf.setFontSize(10);
+			pdf.setFont("helvetica", "normal");
+			
+			const cols = 5;
+			const colWidth = (maxWidth - 20) / cols;
+			let currentCol = 0;
+			let currentRow = 0;
+
+			quizData.forEach((quiz: QuizItem, index: number) => {
+				if (yPosition + (currentRow * 15) > 270) {
+					pdf.addPage();
+					yPosition = 30;
+					currentRow = 0;
+				}
+
+				const xPos = margin + (currentCol * colWidth);
+				const yPos = yPosition + (currentRow * 15);
+				
+				const correctLetter = String.fromCharCode(64 + quiz.correct); // A=1, B=2, etc.
+				const answerText = `${index + 1}. ${correctLetter}`;
+				
+				pdf.text(answerText, xPos, yPos);
+
+				currentCol++;
+				if (currentCol >= cols) {
+					currentCol = 0;
+					currentRow++;
+				}
+			});
+
+			yPosition += Math.ceil(quizData.length / cols) * 15 + 10;
+		}
+
+		const pageCount = (pdf as any).internal.getNumberOfPages();
+		for (let i = 1; i <= pageCount; i++) {
+			pdf.setPage(i);
+			pdf.setFontSize(8);
+			pdf.setFont("helvetica", "normal");
+			pdf.text(`Generated by SimplifAI - Page ${i} of ${pageCount}`, margin, 285);
+		}
+
+		pdf.save(`${fileName}_summary.pdf`);
 	};
 	const handleShare = () => {
 		if (!data) return;
@@ -52,9 +265,23 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
-					<Button variant="outline" size="sm" className="hidden sm:flex" onClick={handleExport}>
-						<Download className="w-4 h-4 mr-2" />
-						Export
+					<Button 
+						variant="outline" 
+						size="sm" 
+						className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-red-700 hover:text-red-800" 
+						onClick={handleExportPDF}
+					>
+						<FileText className="w-4 h-4 mr-2" />
+						Export as PDF
+					</Button>
+					<Button 
+						variant="outline" 
+						size="sm" 
+						className="hidden sm:flex bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 hover:text-blue-800" 
+						onClick={handleExportJSON}
+					>
+						<Braces className="w-4 h-4 mr-2" />
+						Export as JSON
 					</Button>
 					<Button variant="outline" size="sm" className="hidden sm:flex" onClick={handleShare}>
 						<Share2 className="w-4 h-4 mr-2" />

@@ -1,10 +1,16 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, FileText, Share2, Download, FileJson, Braces } from "lucide-react";
+import { ArrowLeft, FileText, Share2, Download, FileJson, Braces, MoreVertical } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import jsPDF from "jspdf";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface MainPoint {
   keyPoint: string;
@@ -265,24 +271,34 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
-					<Button 
-						variant="outline" 
-						size="sm" 
-						className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-red-700 hover:text-red-800" 
-						onClick={handleExportPDF}
-					>
-						<FileText className="w-4 h-4 mr-2" />
-						Export as PDF
-					</Button>
-					<Button 
-						variant="outline" 
-						size="sm" 
-						className="hidden sm:flex bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 hover:text-blue-800" 
-						onClick={handleExportJSON}
-					>
-						<Braces className="w-4 h-4 mr-2" />
-						Export as JSON
-					</Button>
+					<div className="flex items-center">
+						<Button 
+							variant="outline" 
+							size="sm" 
+							className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-red-700 hover:text-red-800 rounded-r-none border-r-0" 
+							onClick={handleExportPDF}
+						>
+							<FileText className="w-4 h-4 mr-2" />
+							Export
+						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button 
+									variant="outline" 
+									size="sm" 
+									className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-red-700 hover:text-red-800 rounded-l-none px-2" 
+								>
+									<MoreVertical className="w-3 h-3" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuItem onClick={handleExportJSON} className="cursor-pointer">
+									<Braces className="w-4 h-4 mr-2" />
+									Export as JSON
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
 					<Button variant="outline" size="sm" className="hidden sm:flex" onClick={handleShare}>
 						<Share2 className="w-4 h-4 mr-2" />
 						Share

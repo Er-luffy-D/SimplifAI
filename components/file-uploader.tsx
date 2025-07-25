@@ -22,6 +22,7 @@ export function FileUploader() {
 	const [progress, setProgress] = useState(0);
 	const [error, setError] = useState<string | null>(null);
 	const [dragActive, setDragActive] = useState(false);
+	const [summaryLength, setSummaryLength] = useState<'short' | 'medium' | 'long'>('short');
 	const router = useRouter();
 	const session = useSession();
 
@@ -84,6 +85,7 @@ export function FileUploader() {
 		const formData = new FormData();
 		formData.append("file", file);
 		formData.append("type", file.type);
+		formData.append("summaryLength", summaryLength);
 
 		try {
 			const res = await axios.post(`/api/parse-pdf`, formData);
@@ -133,6 +135,43 @@ export function FileUploader() {
 		<form onSubmit={handleSubmit} className="space-y-6">
 			{error && <Toast message={error} type="error" onClose={() => setError(null)} />}
 			<div className="grid w-full gap-4">
+				{/* Summary Length Selection */}
+				<div className="space-y-3">
+					<label className="text-sm font-medium text-foreground">Summary Length</label>
+					<div className="flex gap-2">
+						<Button
+							type="button"
+							variant={summaryLength === 'short' ? 'default' : 'outline'}
+							size="sm"
+							onClick={() => setSummaryLength('short')}
+							className={`flex-1 ${summaryLength === 'short' ? 'bg-violet-500 hover:bg-violet-700' : ''}`}
+						>
+							Short
+							<span className="text-xs ml-1 opacity-75">(3-4 points)</span>
+						</Button>
+						<Button
+							type="button"
+							variant={summaryLength === 'medium' ? 'default' : 'outline'}
+							size="sm"
+							onClick={() => setSummaryLength('medium')}
+							className={`flex-1 ${summaryLength === 'medium' ? 'bg-violet-500 hover:bg-violet-700' : ''}`}
+						>
+							Medium
+							<span className="text-xs ml-1 opacity-75">(6-8 points)</span>
+						</Button>
+						<Button
+							type="button"
+							variant={summaryLength === 'long' ? 'default' : 'outline'}
+							size="sm"
+							onClick={() => setSummaryLength('long')}
+							className={`flex-1 ${summaryLength === 'long' ? 'bg-violet-500 hover:bg-violet-700' : ''}`}
+						>
+							Long
+							<span className="text-xs ml-1 opacity-75">(9-10 points)</span>
+						</Button>
+					</div>
+				</div>
+
 				<div
 					className={`relative flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 ${
 						dragActive

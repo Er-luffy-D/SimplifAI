@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
 	const formData = await req.formData();
 	const file = formData.get("file") as File | null;
 	const fileType = formData.get("type") as string | null;
+	const summaryLength = formData.get("summaryLength") as string | null;
 
 	if (!file) {
 		return new Response(JSON.stringify({ error: "No file uploaded" }), { status: 400 });
@@ -28,17 +29,35 @@ export async function POST(req: NextRequest) {
 			return new Response(JSON.stringify({ error: "Unsupported file type" }), { status: 415 });
 		}
 
+		// Determine the number of points based on summary length
+		const getPointCount = (length: string | null) => {
+			switch (length) {
+				case 'short': return { min: 3, max: 4 };
+				case 'medium': return { min: 6, max: 8 };
+				case 'long': return { min: 9, max: 10 };
+				default: return { min: 3, max: 4 }; // default to short
+			}
+		};
+
+		const pointCount = getPointCount(summaryLength);
+		
+		// Generate the mainPoints array for the prompt
+		const generateMainPointsStructure = (count: { min: number, max: number }) => {
+			const points = [];
+			for (let i = 0; i < count.max; i++) {
+				points.push('{ "keyPoint": "..." }');
+			}
+			return points.join(',\n      ');
+		};
+
 		const prompt = `You are a strict assistant. Output only valid JSON. No markdown. No explanation. No text before or after.
 
-Return the following structure filled with meaningful, well-written content based on the input. Each quiz question must have four options, and one must be correct. Set "correct" to 1, 2, 3, or 4 based on the position of the correct option in the array (1-based index). Flashcard difficulties must be "easy", "medium", or "hard". Questions must vary naturally in structure and tone.
+Return the following structure filled with meaningful, well-written content based on the input. Generate ${pointCount.min}-${pointCount.max} main points for the summary. Each quiz question must have four options, and one must be correct. Set "correct" to 1, 2, 3, or 4 based on the position of the correct option in the array (1-based index). Flashcard difficulties must be "easy", "medium", or "hard". Questions must vary naturally in structure and tone.
 
 {
   "summary": {
     "mainPoints": [
-      { "keyPoint": "..." },
-      { "keyPoint": "..." },
-      { "keyPoint": "..." },
-      { "keyPoint": "..." }
+      ${generateMainPointsStructure(pointCount)}
     ],
     "keyInsights": "...",
     "recommendations": [
@@ -109,7 +128,7 @@ Return the following structure filled with meaningful, well-written content base
 
 INPUT TEXT:
 ${textContent}`;
-
+  
 		const openRouterPayload = {
 			model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
 			response_format: "json",

@@ -91,6 +91,7 @@ export function FlashcardView() {
 						</div>
 					</div>
 					<div className="flex gap-2">
+						{/* Favorite Button */}
 						<Button
 							variant="ghost"
 							size="sm"
@@ -99,6 +100,7 @@ export function FlashcardView() {
 						>
 							<Star className={`w-4 h-4 ${favorites.includes(currentCard) ? "fill-yellow-400 text-yellow-400" : ""}`} />
 						</Button>
+						{/* Reset and Shuffle Buttons */}
 						<Button
 							variant="ghost"
 							size="sm"

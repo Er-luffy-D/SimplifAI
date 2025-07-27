@@ -14,9 +14,8 @@ type FlashCards = {
 }[];
 
 export function FlashcardView() {
-	const originalFlashcards = useSelector((state: RootState) => state.parse.flashcards) as FlashCards;
+	const flashcards = useSelector((state: RootState) => state.parse.flashcards) as FlashCards;
 
-	const [flashcards, setFlashcards] = useState(originalFlashcards);
 	const [currentCard, setCurrentCard] = useState(0);
 	const [flipped, setFlipped] = useState(false);
 	const [favorites, setFavorites] = useState<number[]>([]);
@@ -39,26 +38,6 @@ export function FlashcardView() {
 		setFavorites((prev) =>
 			prev.includes(currentCard) ? prev.filter((id) => id !== currentCard) : [...prev, currentCard]
 		);
-	};
-
-	const shuffleCards = () => {
-		const currentCardData = flashcards[currentCard];
-		const shuffled = [...flashcards].sort(() => Math.random() - 0.5);		
-		if (shuffled.length > 1 && shuffled[0] === currentCardData) {
-			const differentCardIndex = shuffled.findIndex((card, index) => index > 0 && card !== currentCardData);
-			if (differentCardIndex > 0) {
-				[shuffled[0], shuffled[differentCardIndex]] = [shuffled[differentCardIndex], shuffled[0]];
-			}
-		}
-		
-		setFlashcards(shuffled);
-		setCurrentCard(0);
-		setFlipped(false);
-	};
-
-	const resetCards = () => {
-		setCurrentCard(0);
-		setFlipped(false);
 	};
 
 	const getDifficultyColor = (difficulty: string) => {
@@ -102,18 +81,13 @@ export function FlashcardView() {
 						<Button
 							variant="ghost"
 							size="sm"
-							onClick={resetCards}
+							onClick={() => setFlipped(false)}
 							className="hover:scale-110 transition-all duration-300"
 						>
 							<RotateCcw className="w-4 h-4 mr-2" />
 							Reset
 						</Button>
-						<Button 
-							variant="ghost" 
-							size="sm" 
-							onClick={shuffleCards}
-							className="hover:scale-110 transition-all duration-300"
-						>
+						<Button variant="ghost" size="sm" className="hover:scale-110 transition-all duration-300">
 							<Shuffle className="w-4 h-4 mr-2" />
 							Shuffle
 						</Button>
@@ -121,24 +95,6 @@ export function FlashcardView() {
 				</div>
 
 				<div className="relative perspective-1000">
-					{/* Left Navigation Arrow */}
-					<Button
-						onClick={prevCard}
-						variant="ghost"
-						className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-4 h-[60%] bg-white/5 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110 flex items-center justify-center border border-white/20"
-					>
-						<ChevronLeft className="w-5 h-5 text-white" />
-					</Button>
-
-					{/* Right Navigation Arrow */}
-					<Button
-						onClick={nextCard}
-						variant="ghost"
-						className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-4 h-[60%] bg-white/5 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110 flex items-center justify-center border border-white/20"
-					>
-						<ChevronRight className="w-5 h-5 text-white" />
-					</Button>
-
 					<Card
 						className={`relative w-full aspect-[3/2] cursor-pointer transition-all duration-700 hover:shadow-2xl hover:shadow-primary/20 ${
 							flipped ? "bg-gradient-to-br from-primary/5 to-purple-500/5" : "hover:scale-[1.02]"
@@ -194,7 +150,7 @@ export function FlashcardView() {
 
 				<div className="text-center px-4">
 					<p className="text-sm font-medium mb-1">Click card to flip</p>
-					<div className="flex gap-1 justify-center items-center">
+					<div className="flex gap-1">
 						{flashcards.map((_, index) => (
 							<div
 								key={index}

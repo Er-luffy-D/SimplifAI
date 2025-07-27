@@ -115,6 +115,8 @@ export function QuizView() {
 													: ""
 											}`}
 											onClick={() => handleOptionSelect(index.toString())}
+											data-cursor="hover"
+											data-cursor-text={`Option ${index + 1}`}
 										>
 											<RadioGroupItem value={index.toString()} id={`option-${index}`} disabled={isPreviouslyAnswered} />
 											<Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
@@ -133,10 +135,10 @@ export function QuizView() {
 						</div>
 					</CardContent>
 					<CardFooter className="flex justify-between">
-						<Button onClick={handleBack} disabled={currentQuestion === 0} variant="outline">
+						<Button onClick={handleBack} disabled={currentQuestion === 0} variant="outline" data-cursor="hover" data-cursor-text="Previous Question">
 							Back
 						</Button>
-						<Button onClick={handleNext} disabled={selectedOption === null}>
+						<Button onClick={handleNext} disabled={selectedOption === null} data-cursor="button" data-cursor-text="Next Question">
 							{currentQuestion < quizQuestions.length - 1 ? "Next" : "Submit"}
 						</Button>
 					</CardFooter>
@@ -171,7 +173,7 @@ export function QuizView() {
 						</div>
 					</CardContent>
 					<CardFooter>
-						<Button onClick={resetQuiz} className="w-full">
+						<Button onClick={resetQuiz} className="w-full" data-cursor="button" data-cursor-text="Restart Quiz">
 							Restart Quiz
 						</Button>
 					</CardFooter>

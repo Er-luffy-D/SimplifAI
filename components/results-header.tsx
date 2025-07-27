@@ -258,7 +258,7 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 		<div className="sticky top-0 z-10 bg-background border-b">
 			<div className="container flex items-center justify-between h-16 px-4 mx-auto">
 				<div className="flex items-center gap-4">
-					<Button variant="ghost" size="icon" asChild>
+					<Button variant="ghost" size="icon" asChild data-cursor="hover" data-cursor-text="Back to Home">
 						<Link href="/">
 							<ArrowLeft className="w-5 h-5" />
 							<span className="sr-only">Back</span>
@@ -276,6 +276,8 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 							size="sm"
 							className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-white hover:text-blue-500 rounded-r-none border-r-0"
 							onClick={handleExportPDF}
+							data-cursor="hover"
+							data-cursor-text="Export as PDF"
 						>
 							<FileText className="w-4 h-4 mr-2" />
 							Export
@@ -286,6 +288,8 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 									variant="outline"
 									size="sm"
 									className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-white hover:text-blue-500 rounded-l-none px-2"
+									data-cursor="hover"
+									data-cursor-text="Export Options"
 								>
 									<MoreVertical className="w-3 h-3" />
 								</Button>
@@ -298,7 +302,7 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</div>
-					<Button variant="outline" size="sm" className="hidden sm:flex" onClick={handleShare}>
+					<Button variant="outline" size="sm" className="hidden sm:flex" onClick={handleShare} data-cursor="hover" data-cursor-text="Share Results">
 						<Share2 className="w-4 h-4 mr-2" />
 						Share
 					</Button>

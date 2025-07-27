@@ -34,6 +34,8 @@ export function UserLabel() {
 						aria-haspopup="true"
 						aria-expanded={open}
 						title={session.user.email ?? ""}
+						data-cursor="hover"
+						data-cursor-text="User Menu"
 					>
 						<User className="w-5 h-5 text-purple-300" />
 						<span className="bg-gradient-to-r from-purple-300 via-pink-400 to-purple-300 bg-clip-text text-transparent max-w-[180px] truncate">
@@ -49,6 +51,8 @@ export function UserLabel() {
 									signOut({ callbackUrl: "/" });
 									setOpen(false);
 								}}
+								data-cursor="hover"
+								data-cursor-text="Logout"
 							>
 								<LogOut className="w-4 h-4 text-pink-400" />
 								Logout
@@ -61,6 +65,8 @@ export function UserLabel() {
 					size="sm"
 					className="rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold px-9 shadow-lg shadow-purple-500/25 hover:from-purple-600 hover:to-pink-600 transition-all"
 					onClick={() => (window.location.href = "/signin")}
+					data-cursor="button"
+					data-cursor-text="Sign In"
 				>
 					<LogIn className="w-4 h-4 mr-1" />
 					Sign In

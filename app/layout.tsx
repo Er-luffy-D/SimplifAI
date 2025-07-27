@@ -7,6 +7,8 @@ import StoreProvider from "./store-provider";
 import { SessionProviderC } from "@/components/SessionProviderC";
 import { LoadingProvider } from "@/components/loading-provider";	
 import LenisProvider from "@/components/LenisProvider";
+import CustomCursor from "@/components/CustomCursor";
+import ScrollProgress from "@/components/ScrollProgress";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					<LoadingProvider>
 						<SessionProviderC>
 							<StoreProvider>
-								<LenisProvider>{children}</LenisProvider>
+								<LenisProvider>
+									<CustomCursor />
+									<ScrollProgress />
+									{children}
+								</LenisProvider>
 							</StoreProvider>
 						</SessionProviderC>
 					</LoadingProvider>

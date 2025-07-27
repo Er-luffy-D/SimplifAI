@@ -151,6 +151,8 @@ export function FileUploader() {
 							size="sm"
 							onClick={() => setSummaryLength("short")}
 							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "short" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							data-cursor="hover"
+							data-cursor-text="Short Summary"
 						>
 							Short <span className="text-xs ml-1 opacity-75">(3-4 points)</span>
 						</Button>
@@ -163,6 +165,8 @@ export function FileUploader() {
 								handleInfo("It will take too long to process. Use less size files 1-2 MB for medium summaries.");
 							}}
 							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "medium" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							data-cursor="hover"
+							data-cursor-text="Medium Summary"
 						>
 							Medium <span className="text-xs ml-1 opacity-75">(6-8 points)</span>
 						</Button>
@@ -175,6 +179,8 @@ export function FileUploader() {
 								handleInfo("It will take too long to process. Use less size files 1-2 MB for long summaries.");
 							}}
 							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "long" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							data-cursor="hover"
+							data-cursor-text="Long Summary"
 						>
 							Long <span className="text-xs ml-1 opacity-75">(9-10 points)</span>
 						</Button>
@@ -194,6 +200,8 @@ export function FileUploader() {
 					onDragLeave={handleDrag}
 					onDragOver={handleDrag}
 					onDrop={handleDrop}
+					data-cursor="hover"
+					data-cursor-text="Upload PDF"
 				>
 					{file ? (
 						<div className="flex flex-col items-center gap-3 text-center animate-fade-in w-full break-words px-2"> {/* ✅ ADDED padding & wrapping */}
@@ -251,6 +259,8 @@ export function FileUploader() {
 							type="submit"
 							className="w-full group hover:scale-[1.02] transition-all duration-300 bg-gradient-primary-purple hover:bg-gradient-purple-pink text-white text-base sm:text-sm"
 							disabled={!file || uploading}
+							data-cursor="button"
+							data-cursor-text="Process Document"
 						>
 							{uploading ? (
 								<>

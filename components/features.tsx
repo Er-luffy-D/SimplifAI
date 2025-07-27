@@ -62,6 +62,8 @@ export function Features() {
 					key={index}
 					className="group relative overflow-hidden bg-transparent p-[1px] rounded-xl transition-all duration-500 hover:scale-105 animate-fade-in-up cursor-pointer"
 					style={{ animationDelay: `${index * 100}ms` }}
+					data-cursor="hover"
+					data-cursor-text={feature.title}
 				>
 					<MovingBorder duration={12000} rx="30%" ry="30%">
 						<div className={`h-32 w-32 ${feature.borderColor} opacity-[0.7]`} />

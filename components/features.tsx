@@ -48,7 +48,7 @@ export function Features() {
 		{
 			icon: <TrendingUp />,
 			title: "Progress Tracking",
-			description: "Monitor your learning journey with detailed analytics and performance insights",
+			description: "Monitor your learning journey with detailed analytics",
 			bgGradient: "bg-rose-500/10",
 			textColor: "text-rose-500",
 			borderColor: "bg-[radial-gradient(#f43f5e_40%,transparent_60%)]",

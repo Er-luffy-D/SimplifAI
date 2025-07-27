@@ -122,14 +122,14 @@ export default function AboutPage() {
 			</div>
 
 			{/* Hero Section */}
-			<div className="relative z-0 container mx-auto px-4 py-20">
+			<div className="relative z-0 container mx-auto px-4 py-10 sm:py-20">
 				<div className="text-center max-w-5xl mx-auto">
 					<div className="inline-flex items-center justify-center px-4 py-2 mb-8 text-sm font-medium rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 animate-pulse-gentle">
 						<Sparkles className="w-4 h-4 mr-2 text-purple-400 animate-bounce-gentle" />
 						<span className="text-purple-300">Our Story</span>
 					</div>
 
-					<h1 className="text-5xl md:text-7xl font-black mb-8 animate-fade-in-up">
+					<h1 className="text-4xl sm:text-5xl md:text-7xl font-black mb-8 animate-fade-in-up">
 						Revolutionizing{" "}
 						<span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-gradient-x">
 							Learning

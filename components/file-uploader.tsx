@@ -144,16 +144,15 @@ export function FileUploader() {
 				{/* Summary Length Selection */}
 				<div className="space-y-3">
 					<label className="text-sm font-medium text-foreground">Summary Length</label>
-					<div className="flex gap-2">
+					<div className="flex flex-col sm:flex-row gap-3 md:gap-2 mt-2 md:mt-3.5">
 						<Button
 							type="button"
 							variant={summaryLength === "short" ? "default" : "outline"}
 							size="sm"
 							onClick={() => setSummaryLength("short")}
-							className={`flex-1 ${summaryLength === "short" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "short" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
 						>
-							Short
-							<span className="text-xs ml-1 opacity-75">(3-4 points)</span>
+							Short <span className="text-xs ml-1 opacity-75">(3-4 points)</span>
 						</Button>
 						<Button
 							type="button"
@@ -163,10 +162,9 @@ export function FileUploader() {
 								setSummaryLength("medium");
 								handleInfo("It will take too long to process. Use less size files 1-2 MB for medium summaries.");
 							}}
-							className={`flex-1 ${summaryLength === "medium" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "medium" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
 						>
-							Medium
-							<span className="text-xs ml-1 opacity-75">(6-8 points)</span>
+							Medium <span className="text-xs ml-1 opacity-75">(6-8 points)</span>
 						</Button>
 						<Button
 							type="button"
@@ -176,53 +174,51 @@ export function FileUploader() {
 								setSummaryLength("long");
 								handleInfo("It will take too long to process. Use less size files 1-2 MB for long summaries.");
 							}}
-							className={`flex-1 ${summaryLength === "long" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "long" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
 						>
-							Long
-							<span className="text-xs ml-1 opacity-75">(9-10 points)</span>
+							Long <span className="text-xs ml-1 opacity-75">(9-10 points)</span>
 						</Button>
 					</div>
 				</div>
 
+				{/* File Dropzone */}
 				<div
-					className={`relative flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 ${
-						dragActive
+					className={`relative flex flex-col items-center justify-center text-center p-6 sm:p-8 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300
+    ${dragActive
 							? "border-primary bg-primary/10 scale-105"
 							: file
-							? "border-green-500 bg-green-50 dark:bg-green-950/20"
-							: "border-muted-foreground/25 bg-muted/30 hover:bg-muted/50 hover:border-primary/50 hover:scale-[1.02]"
-					}`}
+								? "border-green-500 bg-green-50 dark:bg-green-950/20"
+								: "border-muted-foreground/25 bg-muted/30 hover:bg-muted/50 hover:border-primary/50 hover:scale-[1.02]"
+						}`}
 					onDragEnter={handleDrag}
 					onDragLeave={handleDrag}
 					onDragOver={handleDrag}
 					onDrop={handleDrop}
 				>
 					{file ? (
-						<div className="flex flex-col items-center gap-3 text-center animate-fade-in">
+						<div className="flex flex-col items-center gap-3 text-center animate-fade-in w-full break-words px-2"> {/* ✅ ADDED padding & wrapping */}
 							<div className="relative">
 								<FileText className="w-12 h-12 text-green-500 animate-bounce-gentle" />
 								<CheckCircle2 className="w-5 h-5 text-green-500 absolute -top-1 -right-1 animate-scale-in" />
 							</div>
-							<div>
-								<p className="font-medium text-green-700 dark:text-green-400">{file.name}</p>
+							<div className="max-w-full"> {/* ✅ NEW: Wrap file name */}
+								<p className="font-medium text-green-700 dark:text-green-400 text-sm truncate">{file.name}</p>
 								<p className="text-sm text-green-600 dark:text-green-500">
 									{(file.size / 1024 / 1024).toFixed(2)} MB • Ready to process
 								</p>
 							</div>
 						</div>
 					) : (
-						<div className="flex flex-col items-center gap-3 text-center">
+						<div className="flex flex-col items-center gap-3 text-center px-2">
 							<div className="relative">
 								<Upload
-									className={`w-12 h-12 text-muted-foreground transition-all duration-300 ${
-										dragActive ? "scale-110 text-primary" : ""
-									}`}
+									className={`w-12 h-12 text-muted-foreground transition-all duration-300 ${dragActive ? "scale-110 text-primary" : ""}`}
 								/>
 								{dragActive && <Sparkles className="w-4 h-4 text-primary absolute -top-1 -right-1 animate-spin" />}
 							</div>
 							<div className="space-y-1">
 								<p className="font-medium">{dragActive ? "Drop your file here!" : "Drag & drop your file here"}</p>
-								<p className="text-sm text-muted-foreground">or click to browse files • PDF, DOCX, TXT supported</p>
+								<p className="text-sm text-muted-foreground">or click to browse • PDF, DOCX, TXT</p>
 							</div>
 						</div>
 					)}
@@ -232,16 +228,17 @@ export function FileUploader() {
 					</label>
 				</div>
 
+				{/* Submit Button and Progress */}
 				{file && (
 					<div className="space-y-4 animate-fade-in-up">
 						{uploading && (
-							<div className="space-y-2">
+							<div className="space-y-2 text-sm">
 								<div className="flex justify-between text-sm">
 									<span>Processing your document...</span>
 									<span>{Math.round(progress)}%</span>
 								</div>
 								<Progress value={progress} className="h-3 transition-all duration-300" />
-								<div className="flex items-center gap-2 text-sm text-muted-foreground">
+								<div className="flex items-center gap-2 text-muted-foreground">
 									<div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
 									{progress < 30 && "Analyzing document structure..."}
 									{progress >= 30 && progress < 60 && "Extracting key information..."}
@@ -252,7 +249,7 @@ export function FileUploader() {
 						)}
 						<Button
 							type="submit"
-							className="w-full group hover:scale-[1.02] transition-all duration-300 bg-gradient-primary-purple hover:bg-gradient-purple-pink text-white"
+							className="w-full group hover:scale-[1.02] transition-all duration-300 bg-gradient-primary-purple hover:bg-gradient-purple-pink text-white text-base sm:text-sm"
 							disabled={!file || uploading}
 						>
 							{uploading ? (

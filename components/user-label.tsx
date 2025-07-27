@@ -21,7 +21,7 @@ export function UserLabel() {
 
 	// Nice gradient for email
 	return (
-		<div className="fixed top-6 right-8 z-50 flex items-center" ref={menuRef}>
+		<div className="fixed top-6 right-5 z-50 flex items-center" ref={menuRef}>
 			{status === "loading" ? (
 				<div className="rounded-full px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-gray-300 animate-pulse select-none min-w-[120px] text-center">
 					Loading...

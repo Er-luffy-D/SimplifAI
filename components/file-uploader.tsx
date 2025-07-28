@@ -150,7 +150,7 @@ export function FileUploader() {
 							variant={summaryLength === "short" ? "default" : "outline"}
 							size="sm"
 							onClick={() => setSummaryLength("short")}
-							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "short" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "short" ? "bg-violet-500 hover:bg-violet-700" : ""} hover:cursor-pointer`}
 						>
 							Short <span className="text-xs ml-1 opacity-75">(3-4 points)</span>
 						</Button>
@@ -162,7 +162,7 @@ export function FileUploader() {
 								setSummaryLength("medium");
 								handleInfo("It will take too long to process. Use less size files 1-2 MB for medium summaries.");
 							}}
-							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "medium" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "medium" ? "bg-violet-500 hover:bg-violet-700" : ""} hover:cursor-pointer`}
 						>
 							Medium <span className="text-xs ml-1 opacity-75">(6-8 points)</span>
 						</Button>
@@ -174,7 +174,7 @@ export function FileUploader() {
 								setSummaryLength("long");
 								handleInfo("It will take too long to process. Use less size files 1-2 MB for long summaries.");
 							}}
-							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "long" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "long" ? "bg-violet-500 hover:bg-violet-700" : ""} hover:cursor-pointer`}
 						>
 							Long <span className="text-xs ml-1 opacity-75">(9-10 points)</span>
 						</Button>

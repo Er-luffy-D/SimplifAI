@@ -274,7 +274,7 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 						<Button
 							variant="outline"
 							size="sm"
-							className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-white hover:text-blue-500 rounded-r-none border-r-0"
+							className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-white hover:text-blue-500 rounded-r-none border-r-0 hover:cursor-pointer"
 							onClick={handleExportPDF}
 						>
 							<FileText className="w-4 h-4 mr-2" />
@@ -298,7 +298,7 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</div>
-					<Button variant="outline" size="sm" className="hidden sm:flex" onClick={handleShare}>
+					<Button variant="outline" size="sm" className="hidden sm:flex hover:cursor-pointer" onClick={handleShare}>
 						<Share2 className="w-4 h-4 mr-2" />
 						Share
 					</Button>

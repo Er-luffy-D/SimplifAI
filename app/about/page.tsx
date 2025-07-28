@@ -214,7 +214,7 @@ export default function AboutPage() {
 							</p>
 						</div>
 						<Button
-							className="mt-8 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-4 h-auto hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-500/25"
+							className="mt-8 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-4 h-auto hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-500/25 hover:cursor-pointer"
 							onClick={() => window.open("https://github.com/Er-luffy-d")}
 						>
 							Check Github <Github className="inline-block w-5 h-5" />
@@ -311,7 +311,7 @@ export default function AboutPage() {
 								<Card
 									className={`w-full max-w-md bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:scale-105 group ${
 										index % 2 === 0 ? "mr-8" : "ml-8"
-									}`}
+									} hover:cursor-pointer`}
 								>
 									<CardHeader>
 										<div className="flex items-center gap-4 mb-4">
@@ -391,7 +391,7 @@ export default function AboutPage() {
 							<div className="flex flex-col sm:flex-row gap-4 justify-center">
 								<Button
 									size="lg"
-									className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-4 h-auto hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-500/25"
+									className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-4 h-auto hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-500/25 hover:cursor-pointer"
 									onClick={() => window.open("https://simplif-ai-xi.vercel.app/", "_blank")}
 								>
 									Start Learning Today
@@ -399,7 +399,7 @@ export default function AboutPage() {
 								<Button
 									size="lg"
 									variant="outline"
-									className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-gray-500 px-8 py-4 h-auto hover:scale-105 transition-all duration-300"
+									className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-gray-500 px-8 py-4 h-auto hover:scale-105 transition-all duration-300 hover:cursor-pointer"
 									onClick={() => window.open("https://linkedin.com/in/piyushdixitizme", "_blank")}
 								>
 									Connect

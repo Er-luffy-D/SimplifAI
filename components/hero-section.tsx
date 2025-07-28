@@ -39,7 +39,7 @@ export function HeroSection() {
 					{!user ? (
 						<Button
 							size="lg"
-							className="gap-2 group hover:scale-105 transition-all duration-300 bg-gradient-primary-purple hover:bg-gradient-purple-pink text-white"
+							className="gap-2 group hover:scale-105 transition-all duration-300 bg-gradient-primary-purple hover:bg-gradient-purple-pink text-white hover:cursor-pointer"
 							onClick={handleGetStarted}
 						>
 							Get Started
@@ -48,7 +48,7 @@ export function HeroSection() {
 					) : (
 						<Button
 							size="lg"
-							className="gap-2 group hover:scale-105 transition-all duration-300 bg-gradient-primary-purple hover:bg-gradient-purple-pink text-white"
+							className="gap-2 group hover:scale-105 transition-all duration-300 bg-gradient-primary-purple hover:bg-gradient-purple-pink text-white hover:cursor-pointer"
 							onClick={() => {
 								window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 								document.getElementById("file")?.click();
@@ -61,7 +61,7 @@ export function HeroSection() {
 					<Button
 						size="lg"
 						variant="outline"
-						className="group hover:scale-105 duration-300 hover:bg-gradient-primary-purple transition-all"
+						className="group hover:scale-105 duration-300 hover:bg-gradient-primary-purple transition-all hover:cursor-pointer"
 						onClick={() => (window.location.href = "/about")}
 					>
 						Learn More
@@ -69,16 +69,16 @@ export function HeroSection() {
 				</div>
 
 				{/* Floating stats */}
-				<div className="flex justify-center gap-8 mt-[50px] sm:mt-16 animate-fade-in-up animation-delay-600">
-					<div className="text-center group hover:scale-110 transition-all duration-300">
+				<div className="flex justify-center gap-8 mt-[50px] sm:mt-16 animate-fade-in-up animation-delay-600 ">
+					<div className="text-center group hover:scale-110 transition-all duration-300 hover:cursor-pointer">
 						<div className="text-2xl font-bold text-gradient-blue-cyan">10K+</div>
 						<div className="text-sm text-muted-foreground">Documents Processed</div>
 					</div>
-					<div className="text-center group hover:scale-110 transition-all duration-300">
+					<div className="text-center group hover:scale-110 transition-all duration-300 hover:cursor-pointer">
 						<div className="text-2xl font-bold text-gradient-green-emerald">50K+</div>
 						<div className="text-sm text-muted-foreground">Flashcards Created</div>
 					</div>
-					<div className="text-center group hover:scale-110 transition-all duration-300">
+					<div className="text-center group hover:scale-110 transition-all duration-300 hover:cursor-pointer">
 						<div className="text-2xl font-bold text-gradient-purple-pink">95%</div>
 						<div className="text-sm text-muted-foreground">Success Rate</div>
 					</div>

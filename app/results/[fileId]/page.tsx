@@ -21,9 +21,9 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
 			<div className="container px-4 py-8 mx-auto">
 				<Tabs defaultValue="summary" className="w-full">
 					<TabsList className="grid w-full grid-cols-3 mb-8">
-						<TabsTrigger value="summary">Summary</TabsTrigger>
-						<TabsTrigger value="flashcards">Flashcards</TabsTrigger>
-						<TabsTrigger value="quiz">Quiz</TabsTrigger>
+						<TabsTrigger value="summary" className="hover:cursor-pointer">Summary</TabsTrigger>
+						<TabsTrigger value="flashcards" className="hover:cursor-pointer">Flashcards</TabsTrigger>
+						<TabsTrigger value="quiz" className="hover:cursor-pointer">Quiz</TabsTrigger>
 					</TabsList>
 					<TabsContent value="summary">
 						<SummaryView />

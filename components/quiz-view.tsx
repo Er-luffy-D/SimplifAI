@@ -133,10 +133,10 @@ export function QuizView() {
 						</div>
 					</CardContent>
 					<CardFooter className="flex justify-between">
-						<Button onClick={handleBack} disabled={currentQuestion === 0} variant="outline">
+						<Button onClick={handleBack} disabled={currentQuestion === 0} variant="outline" className="hover:cursor-pointer">
 							Back
 						</Button>
-						<Button onClick={handleNext} disabled={selectedOption === null}>
+						<Button onClick={handleNext} disabled={selectedOption === null} className="hover:cursor-pointer">
 							{currentQuestion < quizQuestions.length - 1 ? "Next" : "Submit"}
 						</Button>
 					</CardFooter>
@@ -171,7 +171,7 @@ export function QuizView() {
 						</div>
 					</CardContent>
 					<CardFooter>
-						<Button onClick={resetQuiz} className="w-full">
+						<Button onClick={resetQuiz} className="w-full hover:cursor-pointer">
 							Restart Quiz
 						</Button>
 					</CardFooter>

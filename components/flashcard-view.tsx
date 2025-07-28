@@ -74,7 +74,7 @@ export function FlashcardView() {
 							variant="ghost"
 							size="sm"
 							onClick={toggleFavorite}
-							className="hover:scale-110 transition-all duration-300"
+							className="hover:scale-110 transition-all duration-300 hover:cursor-pointer"
 						>
 							<Star className={`w-4 h-4 ${favorites.includes(currentCard) ? "fill-yellow-400 text-yellow-400" : ""}`} />
 						</Button>
@@ -82,12 +82,12 @@ export function FlashcardView() {
 							variant="ghost"
 							size="sm"
 							onClick={() => setFlipped(false)}
-							className="hover:scale-110 transition-all duration-300"
+							className="hover:scale-110 transition-all duration-300 hover:cursor-pointer"
 						>
-							<RotateCcw className="w-4 h-4 mr-2" />
+							<RotateCcw className="w-4 h-4 mr-2 " />
 							Reset
 						</Button>
-						<Button variant="ghost" size="sm" className="hover:scale-110 transition-all duration-300">
+						<Button variant="ghost" size="sm" className="hover:scale-110 transition-all duration-300 hover:cursor-pointer">
 							<Shuffle className="w-4 h-4 mr-2" />
 							Shuffle
 						</Button>
@@ -142,7 +142,7 @@ export function FlashcardView() {
 					onClick={prevCard}
 					variant="outline"
 					size="icon"
-					className="hover:scale-110 hover:bg-primary/10 transition-all duration-300"
+					className="hover:scale-110 hover:bg-primary/10 transition-all duration-300 hover:cursor-pointer"
 				>
 					<ChevronLeft className="w-5 h-5" />
 					<span className="sr-only">Previous card</span>
@@ -166,7 +166,7 @@ export function FlashcardView() {
 					onClick={nextCard}
 					variant="outline"
 					size="icon"
-					className="hover:scale-110 hover:bg-primary/10 transition-all duration-300"
+					className="hover:scale-110 hover:bg-primary/10 transition-all duration-300 hover:cursor-pointer"
 				>
 					<ChevronRight className="w-5 h-5" />
 					<span className="sr-only">Next card</span>

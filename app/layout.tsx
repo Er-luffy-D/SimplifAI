@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import StoreProvider from "./store-provider";
 import { SessionProviderC } from "@/components/SessionProviderC";
 import { LoadingProvider } from "@/components/loading-provider";
+import { Footer } from "@/components/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange={false}>
 					<LoadingProvider>
 						<SessionProviderC>
-							<StoreProvider>{children}</StoreProvider>
+							<StoreProvider>
+								<div className="flex flex-col min-h-screen">
+									<main className="flex-1">
+										{children}
+									</main>
+									<Footer />
+								</div>
+							</StoreProvider>
 						</SessionProviderC>
 					</LoadingProvider>
 				</ThemeProvider>

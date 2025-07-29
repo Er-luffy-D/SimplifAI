@@ -8,7 +8,7 @@ import OmniDimWidget from "@/components/Omnidev";
 
 export default function Home() {
 	return (
-		<main className="flex min-h-screen flex-col relative">
+		<div className="flex flex-col relative">
 			<AnimatedBackground />
 			<UserLabel />
 			<HeroSection />
@@ -32,6 +32,6 @@ export default function Home() {
 				</div>
 				<OmniDimWidget />
 			</div>
-		</main>
+		</div>
 	);
 }

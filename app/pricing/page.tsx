@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Star, Zap, Crown, Rocket, X } from "lucide-react";
@@ -233,7 +232,7 @@ export default function PricingPage() {
 			{/* Pricing Cards */}
 			<div className="relative z-10 container mx-auto px-4 pb-20">
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto" data-animate="stagger">
-					{plans.map((plan, index) => (
+					{plans.map((plan) => (
 						<div
 							key={plan.name}
 							className={`relative group ${plan.popular ? "lg:-mt-8" : ""}`}

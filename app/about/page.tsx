@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, Users, Target, Award, Lightbulb, Heart, Globe, Zap, Sparkles, Rocket, Github } from "lucide-react";

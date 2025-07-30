@@ -259,6 +259,8 @@ export default function SignUpPage() {
 								type="submit"
 								className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium"
 								disabled={isLoading || formData.password !== formData.confirmPassword}
+								data-cursor="button"
+								data-cursor-text="Create Account"
 							>
 								{isLoading ? (
 									<>

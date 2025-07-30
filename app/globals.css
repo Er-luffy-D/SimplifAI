@@ -86,6 +86,21 @@
 
 /* Custom utilities and animations */
 @layer utilities {
+  /* Hide default cursor on desktop only */
+  @media (min-width: 1024px) and (pointer: fine) {
+    * {
+      cursor: none !important;
+    }
+    
+    /* Show default cursor on form elements for accessibility */
+    input:not([type="submit"]):not([type="button"]), 
+    textarea, 
+    select,
+    [contenteditable="true"] {
+      cursor: text !important;
+    }
+  }
+
   .perspective-1000 {
     perspective: 1000px;
   }
@@ -207,16 +222,104 @@
     background-size: 200% 200%;
   }
 
+  .animate-slide-in-left {
+    animation: slideInFromLeft 0.8s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInFromRight 0.8s ease-out forwards;
+  }
+
+  .animate-slide-in-bottom {
+    animation: slideInFromBottom 0.8s ease-out forwards;
+  }
+
+  .animate-slide-in-top {
+    animation: slideInFromTop 0.8s ease-out forwards;
+  }
+
+  .animate-scale-in-bounce {
+    animation: scaleInBounce 0.6s ease-out forwards;
+  }
+
+  .animate-rotate-in {
+    animation: rotateIn 0.8s ease-out forwards;
+  }
+
+  .animate-text-reveal {
+    animation: textReveal 0.6s ease-out forwards;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  .animate-morphing {
+    animation: morphing 8s ease-in-out infinite;
+  }
+
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
   .animation-delay-200 {
     animation-delay: 200ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
   }
 
   .animation-delay-400 {
     animation-delay: 400ms;
   }
 
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
   .animation-delay-600 {
     animation-delay: 600ms;
+  }
+
+  .animation-delay-700 {
+    animation-delay: 700ms;
+  }
+
+  .animation-delay-800 {
+    animation-delay: 800ms;
+  }
+
+  /* Text reveal utilities */
+  .text-reveal-container {
+    overflow: hidden;
+  }
+
+  .text-reveal-word {
+    display: inline-block;
+    overflow: hidden;
+  }
+
+  .text-reveal-char {
+    display: inline-block;
+    transform: translateY(100%);
+  }
+
+  /* Magnetic utilities */
+  .magnetic {
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Smooth transitions */
+  .smooth-transition {
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   }
 }
 
@@ -312,6 +415,102 @@
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleInBounce {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rotateIn {
+  from {
+    transform: rotate(-10deg) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes textReveal {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.8);
+  }
+}
+
+@keyframes morphing {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  50% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
   }
 }
 

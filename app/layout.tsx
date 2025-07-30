@@ -7,6 +7,9 @@ import StoreProvider from "./store-provider";
 import { SessionProviderC } from "@/components/SessionProviderC";
 import { LoadingProvider } from "@/components/loading-provider";
 import { Footer } from "@/components/footer";
+import LenisProvider from "@/components/LenisProvider";
+import CustomCursor from "@/components/CustomCursor";
+import ScrollProgress from "@/components/ScrollProgress";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,16 +22,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={inter.className}>
-				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange={false}>
+				<ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange={false}>
 					<LoadingProvider>
 						<SessionProviderC>
 							<StoreProvider>
-								<div className="flex flex-col min-h-screen">
-									<main className="flex-1">
-										{children}
-									</main>
-									<Footer />
-								</div>
+								<LenisProvider>
+									<CustomCursor />
+									<ScrollProgress />
+									<div className="flex flex-col min-h-screen">
+										<main className="flex-1">
+											{children}
+										</main>
+										<Footer />
+									</div>
+								</LenisProvider>
 							</StoreProvider>
 						</SessionProviderC>
 					</LoadingProvider>

@@ -95,6 +95,8 @@ export default function SignInPage() {
 								variant="outline"
 								className="w-full border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-600"
 								onClick={() => handleSocialLogin("google")}
+								data-cursor="button"
+								data-cursor-text="Sign in with Google"
 							>
 								<Chrome className="w-4 h-4 mr-2" />
 								Continue with Google
@@ -178,6 +180,8 @@ export default function SignInPage() {
 								type="submit"
 								className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium"
 								disabled={isLoading}
+								data-cursor="button"
+								data-cursor-text="Sign In"
 							>
 								{isLoading ? (
 									<>

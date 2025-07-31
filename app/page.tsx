@@ -8,7 +8,7 @@ import OmniDimWidget from "@/components/Omnidev";
 
 export default function Home() {
 	return (
-		<main className="flex min-h-screen flex-col relative">
+		<div className="flex flex-col relative">
 			<AnimatedBackground />
 			<UserLabel />
 			<HeroSection />
@@ -20,7 +20,10 @@ export default function Home() {
 					<Card className="border-2 border-dashed backdrop-blur-sm bg-card/80 hover:bg-card/90 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl hover:shadow-primary/10">
 						<CardHeader className="text-center">
 							<CardTitle className="text-2xl font-bold text-gradient-purple-pink">Upload Your Document</CardTitle>
-							<CardDescription>We support PDF and TXT files up to 10MB</CardDescription>
+							<CardDescription>
+								PDF and TXT files up to 10MB{" "}
+								<span className="font-semibold text-foreground">(ideally &lt; 2MB for speed)</span>
+							</CardDescription>
 						</CardHeader>
 						<CardContent>
 							<FileUploader />
@@ -32,6 +35,6 @@ export default function Home() {
 				</div>
 				<OmniDimWidget />
 			</div>
-		</main>
+		</div>
 	);
 }

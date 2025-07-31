@@ -23,7 +23,7 @@ type QuizItem = {
 };
 
 export function QuizView() {
-  const data = useSelector(
+ const data = useSelector(
     (state: RootState) => state.parse.quiz
   ) as QuizItem[];
   const quizQuestions = data || [];
@@ -153,6 +153,8 @@ export function QuizView() {
                             handleOptionSelect(index.toString());
                           }
                         }}
+                        data-cursor="hover"
+											data-cursor-text={`Option ${index + 1}`}
                       >
                         <RadioGroupItem
                           value={index.toString()}
@@ -186,10 +188,16 @@ export function QuizView() {
               onClick={handleBack}
               disabled={currentQuestion === 0}
               variant="outline"
+              data-cursor="hover"
+
+							data-cursor-text="Previous Question"
             >
               Back
             </Button>
-            <Button onClick={handleNext} disabled={selectedOption === null}>
+            <Button onClick={handleNext} disabled={selectedOption === null}
+              data-cursor="button"
+
+							data-cursor-text="Next Question">
               {currentQuestion < quizQuestions.length - 1 ? "Next" : "Submit"}
             </Button>
           </CardFooter>
@@ -226,7 +234,7 @@ export function QuizView() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button onClick={resetQuiz} className="w-full">
+            <Button onClick={resetQuiz} className="w-full" data-cursor="button" data-cursor-text="Restart Quiz">
               Restart Quiz
             </Button>
           </CardFooter>

@@ -36,12 +36,17 @@ export function FlashcardView() {
     }, 200);
   };
 
-    const prevCard = () => {
-        setFlipped(false);
-        setTimeout(() => {
-            setCurrentCard((prev) => (prev - 1 + flashcards.length) % flashcards.length);
-        }, 200);
-    };
+  const prevCard = () => {
+    setFlipped(false);
+    setTimeout(() => {
+      setCurrentCard(
+        (prev) => (prev - 1 + flashcards.length) % flashcards.length
+      );
+    }, 200);
+  };
+
+
+  useArrowNav({onPrev:prevCard, onNext:nextCard});
 
   const toggleFavorite = () => {
     setFavorites((prev) =>
@@ -157,47 +162,60 @@ export function FlashcardView() {
             <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
           </Button>
 
-                    <div className="relative w-full perspective-1000">
-                        <Card
-                            className={`relative w-full aspect-[3/2] cursor-pointer transition-all duration-700 hover:shadow-2xl hover:shadow-primary/20 ${
-                                flipped ? "bg-gradient-to-br from-primary/5 to-purple-500/5" : "hover:scale-[1.02]"
-                            }`}
-                            onClick={() => setFlipped(!flipped)}
-                            style={{
-                                transformStyle: "preserve-3d",
-                                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-                            }}
-                          	data-cursor="hover"
-						data-cursor-text="Flip Card"
-                        >
-                            <div
-                                className="absolute inset-0 flex items-center justify-center p-8 text-center backface-hidden rounded-lg border-2 border-dashed border-primary/20"
-                                style={{ backfaceVisibility: "hidden" }}
-                            >
-                                <div className="space-y-4">
-                                    <div className="text-sm text-muted-foreground animate-pulse">Question</div>
-                                    <h3 className="text-xl font-medium leading-relaxed">{flashcards[currentCard].question}</h3>
-                                    <div className="text-sm text-muted-foreground opacity-60">Click to reveal answer</div>
-                                </div>
-                            </div>
+          <div className="relative w-full perspective-1000">
+            <Card
+              className={`relative w-full aspect-[3/2] cursor-pointer transition-all duration-700 hover:shadow-2xl hover:shadow-primary/20 ${
+                flipped
+                  ? "bg-gradient-to-br from-primary/5 to-purple-500/5"
+                  : "hover:scale-[1.02]"
+              }`}
+              onClick={() => setFlipped(!flipped)}
+              style={{
+                transformStyle: "preserve-3d",
+                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+              }}
+              data-cursor="hover"
+              data-cursor-text="Flip Card"
+            >
+              <div
+                className="absolute inset-0 flex items-center justify-center p-8 text-center backface-hidden rounded-lg border-2 border-dashed border-primary/20"
+                style={{ backfaceVisibility: "hidden",background: "black", }}
+              >
+                <div className="space-y-4">
+                  <div className="text-sm text-muted-foreground animate-pulse">
+                    Question
+                  </div>
+                  <h3 className="text-xl font-medium leading-relaxed">
+                    {flashcards[currentCard].question}
+                  </h3>
+                  <div className="text-sm text-muted-foreground opacity-60">
+                    Click to reveal answer
+                  </div>
+                </div>
+              </div>
 
-                            <div
-                                className="absolute inset-0 flex items-center justify-center p-8 text-center backface-hidden rounded-lg bg-gradient-to-br from-primary/10 to-purple-500/10 border-2 border-primary/30"
-                                style={{
-                                    backfaceVisibility: "hidden",
-                                    transform: "rotateY(180deg)",
-                                }}
-                            >
-                                <div className="space-y-4">
-                                    <div className="text-sm text-primary font-medium animate-pulse">Answer</div>
-                                    <p className="text-xl font-medium text-primary leading-relaxed animate-fade-in">
-                                        {flashcards[currentCard].answer}
-                                    </p>
-                                    <div className="text-sm text-muted-foreground opacity-60">Click to see question</div>
-                                </div>
-                            </div>
-                        </Card>
-                    </div>
+              <div
+                className="absolute inset-0 flex items-center justify-center p-8 text-center backface-hidden rounded-lg bg-gradient-to-br from-primary/10 to-purple-500/10 border-2 border-primary/30"
+                style={{
+                  backfaceVisibility: "hidden",
+                  transform: "rotateY(180deg)",
+                  background: "black",
+                }}
+              >
+                <div className="space-y-4">
+                  <div className="text-sm text-primary font-medium animate-pulse">
+                    Answer
+                  </div>
+                  <p className="text-xl font-medium text-primary leading-relaxed animate-fade-in">
+                    {flashcards[currentCard].answer}
+                  </p>
+                  <div className="text-sm text-muted-foreground opacity-60">
+                    Click to see question
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
 
           <Button
             onClick={nextCard}

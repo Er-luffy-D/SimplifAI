@@ -8,7 +8,7 @@ import OmniDimWidget from "@/components/Omnidev";
 
 export default function Home() {
 	return (
-		<main className="flex min-h-screen flex-col relative">
+		<div className="flex flex-col relative">
 			<AnimatedBackground />
 			<UserLabel />
 			<HeroSection />
@@ -16,7 +16,7 @@ export default function Home() {
 				<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 					<Features />
 				</div>
-				<div className="max-w-3xl mx-auto mt-16">
+				<div id="fileupl" className="max-w-3xl mx-auto mt-16">
 					<Card className="border-2 border-dashed backdrop-blur-sm bg-card/80 hover:bg-card/90 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl hover:shadow-primary/10">
 						<CardHeader className="text-center">
 							<CardTitle className="text-2xl font-bold text-gradient-purple-pink">Upload Your Document</CardTitle>
@@ -35,6 +35,6 @@ export default function Home() {
 				</div>
 				<OmniDimWidget />
 			</div>
-		</main>
+		</div>
 	);
 }

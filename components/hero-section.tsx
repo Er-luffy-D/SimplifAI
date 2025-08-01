@@ -52,7 +52,11 @@ export function HeroSection() {
 							size="lg"
 							className="gap-2 group hover:scale-105 transition-all duration-300 bg-gradient-primary-purple hover:bg-gradient-purple-pink text-white"
 							onClick={() => {
-								window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+								const target = document.getElementById("fileupl");
+								if (target) {
+									const y = target.getBoundingClientRect().top + window.scrollY;
+									window.scrollTo({ top: y - 150, behavior: "smooth" });
+								}
 								document.getElementById("file")?.click();
 							}}
 							data-cursor="hover"
@@ -76,15 +80,27 @@ export function HeroSection() {
 
 				{/* Floating stats */}
 				<div className="flex justify-center gap-8 mt-[50px] sm:mt-16 animate-fade-in-up animation-delay-600">
-					<div className="text-center group hover:scale-110 transition-all duration-300" data-cursor="hover" data-cursor-text="Documents">
+					<div
+						className="text-center group hover:scale-110 transition-all duration-300"
+						data-cursor="hover"
+						data-cursor-text="Documents"
+					>
 						<div className="text-2xl font-bold text-gradient-blue-cyan">10K+</div>
 						<div className="text-sm text-muted-foreground">Documents Processed</div>
 					</div>
-					<div className="text-center group hover:scale-110 transition-all duration-300" data-cursor="hover" data-cursor-text="Flashcards">
+					<div
+						className="text-center group hover:scale-110 transition-all duration-300"
+						data-cursor="hover"
+						data-cursor-text="Flashcards"
+					>
 						<div className="text-2xl font-bold text-gradient-green-emerald">50K+</div>
 						<div className="text-sm text-muted-foreground">Flashcards Created</div>
 					</div>
-					<div className="text-center group hover:scale-110 transition-all duration-300" data-cursor="hover" data-cursor-text="Success Rate">
+					<div
+						className="text-center group hover:scale-110 transition-all duration-300"
+						data-cursor="hover"
+						data-cursor-text="Success Rate"
+					>
 						<div className="text-2xl font-bold text-gradient-purple-pink">95%</div>
 						<div className="text-sm text-muted-foreground">Success Rate</div>
 					</div>

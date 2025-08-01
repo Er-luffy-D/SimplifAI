@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import StoreProvider from "./store-provider";
 import { SessionProviderC } from "@/components/SessionProviderC";
 import { LoadingProvider } from "@/components/loading-provider";
+import { Footer } from "@/components/footer";
 import LenisProvider from "@/components/LenisProvider";
 import CustomCursor from "@/components/CustomCursor";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -28,7 +29,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 								<LenisProvider>
 									<CustomCursor />
 									<ScrollProgress />
-									{children}
+									<div className="flex flex-col min-h-screen">
+										<main className="flex-1">
+											{children}
+										</main>
+										<Footer />
+									</div>
 								</LenisProvider>
 							</StoreProvider>
 						</SessionProviderC>

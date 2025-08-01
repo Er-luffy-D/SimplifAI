@@ -21,7 +21,7 @@ type FlashCards = {
 
 export function FlashcardView() {
   const originalFlashcards = useSelector(
-    (state: RootState) => state.parse.flashcards,
+    (state: RootState) => state.parse.flashcards
   ) as FlashCards;
 
   const [flashcards, setFlashcards] = useState(originalFlashcards);
@@ -40,7 +40,7 @@ export function FlashcardView() {
     setFlipped(false);
     setTimeout(() => {
       setCurrentCard(
-        (prev) => (prev - 1 + flashcards.length) % flashcards.length,
+        (prev) => (prev - 1 + flashcards.length) % flashcards.length
       );
     }, 200);
   };
@@ -51,7 +51,7 @@ export function FlashcardView() {
     setFavorites((prev) =>
       prev.includes(currentCard)
         ? prev.filter((id) => id !== currentCard)
-        : [...prev, currentCard],
+        : [...prev, currentCard]
     );
   };
 
@@ -60,7 +60,7 @@ export function FlashcardView() {
     const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
     if (shuffled.length > 1 && shuffled[0] === currentCardData) {
       const differentCardIndex = shuffled.findIndex(
-        (card, index) => index > 0 && card !== currentCardData,
+        (card, index) => index > 0 && card !== currentCardData
       );
       if (differentCardIndex > 0) {
         [shuffled[0], shuffled[differentCardIndex]] = [
@@ -103,7 +103,7 @@ export function FlashcardView() {
             </p>
             <div
               className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
-                flashcards[currentCard].difficulty,
+                flashcards[currentCard].difficulty
               )} text-white`}
             >
               {flashcards[currentCard].difficulty}
@@ -198,7 +198,7 @@ export function FlashcardView() {
                 style={{
                   backfaceVisibility: "hidden",
                   transform: "rotateY(180deg)",
-                  background: "black",
+                  background: "black"
                 }}
               >
                 <div className="space-y-4">

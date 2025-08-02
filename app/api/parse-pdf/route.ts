@@ -6,27 +6,28 @@ import axios from 'axios';
 
 async function extractTextFromFile(file: File): Promise<string> {
   const fileType = file.type;
-    try {
-  switch (fileType) {
-    case 'text/plain':
-      return await file.text();
-      
-    case 'application/pdf':
-      const pdfParse = require('pdf-parse');
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      const pdfData = await pdfParse(buffer);
-      return pdfData.text;
-      
-    default:
-      throw new Error(`Unsupported file type: ${fileType}`);
+  
+  try {
+    switch (fileType) {
+      case 'text/plain':
+        return await file.text();
+        
+      case 'application/pdf':
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const { default: pdfParse } = await import('pdf-parse');
+        const pdfData = await pdfParse(buffer);
+        return pdfData.text;
+        
+      default:
+        throw new Error(`Unsupported file type: ${fileType}`);
+    }
+  } catch (error) {
+    console.error('Error extracting text:', error);
+    throw new Error(`Failed to extract text from ${fileType} file`);
   }
 }
-catch(error){
-  console.error('Error extracting text:', error);
-    throw new Error(`Failed to extract text from ${fileType} file`);
-}
-}
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();

@@ -34,7 +34,16 @@ export class TextChunker {
         chunks.push(chunk);
       }
 
-      start = Math.max(start + this.chunkSize - this.chunkOverlap, end);
+      // Calculate next start position to avoid skipping text
+      // If we broke early (end < start + chunkSize), advance from the break point with overlap
+      // Otherwise, use normal advancement
+      if (end < start + this.chunkSize) {
+        // Early break: start from break point minus overlap, but ensure we don't go backwards
+        start = Math.max(start + 1, end - this.chunkOverlap);
+      } else {
+        // Normal advancement: standard chunk progression
+        start = start + this.chunkSize - this.chunkOverlap;
+      }
     }
 
     return chunks;

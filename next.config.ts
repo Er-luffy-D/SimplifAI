@@ -3,15 +3,16 @@ import path from "path";
 
 const nextConfig: NextConfig = {
 	/* config options here */
-	serverExternalPackages: ["pdf-parse"],
-	experimental: {
-		// Enable if using app directory
-	},
-	webpack: (config) => {
+	serverExternalPackages: ["pdf-parse", "chromadb"],
+	
+	webpack: (config: any) => {
 		config.resolve.alias = {
 			...config.resolve.alias,
 			"@": path.resolve(__dirname, "src"),
 		};
+		config.externals.push({
+			chromadb: "chromadb",
+		});
 		return config;
 	},
 };

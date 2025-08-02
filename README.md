@@ -139,6 +139,66 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) (or open an issue to discuss your 
 
 ---
 
+
+## 🐳 Run Locally with Docker
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Gargibajpai/SimplifAI.git
+cd SimplifAI
+
+## Set Up Environment Variables 
+cp .env.example .env.local
+Then edit the .env.local file and provide the required values:
+
+AI_API_KEY
+
+NEXT_PUBLIC_AI_URL
+
+NEXT_PUBLIC_BACKEND_URL
+
+AUTH_SECRET
+
+GOOGLE_CLIENT_ID
+
+GOOGLE_CLIENT_SECRET
+
+DATABASE_URL
+
+DIRECT_URL
+
+NEXT_PUBLIC_SUPABASE_URL
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+These keys are essential for running the application locally.
+
+## Make Sure Docker Is Installed 
+Install Docker Desktop if it’s not already installed:
+
+Windows/macOS: https://www.docker.com/products/docker-desktop
+
+Ubuntu/Linux: Follow official instructions on https://docs.docker.com/get-docker/
+
+Check Docker and Docker Compose versions:
+
+docker --version
+docker compose version
+
+## Run the App with Docker Compose
+ docker compose up --build
+
+This will:
+
+Build the image
+
+Start the app on http://localhost:3000
+## Stop the App
+
+docker compose down
+
+
 ## 📄 License
 
 MIT License. See [LICENSE](LICENSE).

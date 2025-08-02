@@ -1,103 +1,124 @@
-import axios from "axios";
-import { NextRequest } from "next/server";
-import pdfParse from "pdf-parse";
+import { NextRequest, NextResponse } from 'next/server';
+import { ChromaService } from '@/lib/rag/chroma-service';
+import axios from 'axios';
 
 export async function POST(req: NextRequest) {
-	const formData = await req.formData();
-	const file = formData.get("file") as File | null;
-	const fileType = formData.get("type") as string | null;
+  try {
+    const { question, fileId } = await req.json();
 
-	if (!file) {
-		return new Response(JSON.stringify({ error: "No file uploaded" }), { status: 400 });
-	}
-	if (!fileType) {
-		return new Response(JSON.stringify({ error: "Type is not provided" }), { status: 400 });
-	}
+    if (!question || !fileId) {
+      return NextResponse.json({ 
+        error: 'Question and fileId are required' 
+      }, { status: 400 });
+    }
 
-	// Convert to Buffer
-	const buffer = Buffer.from(await file.arrayBuffer());
+    console.log(`RAG Chat query: "${question}" for fileId: ${fileId}`);
 
-	try {
-		if (fileType === "application/pdf") {
-			const data = await pdfParse(buffer);
+    // Initialize ChromaDB service
+    const chromaService = new ChromaService();
+    
+    // Check if collection exists
+    const collectionExists = await chromaService.collectionExists(fileId);
+    if (!collectionExists) {
+      return NextResponse.json({
+        success: false,
+        error: "Document not found or not processed for RAG. Please upload the document first."
+      }, { status: 404 });
+    }
+    
+    // Retrieve relevant chunks using semantic search
+    const searchResults = await chromaService.queryDocuments(fileId, question, 5);
+    
+    if (!searchResults.documents.length) {
+      return NextResponse.json({
+        success: true,
+        answer: "I couldn't find relevant information in the document to answer your question. Please try rephrasing your question or ask about different topics covered in the document.",
+        sources: [],
+        query: question
+      });
+    }
 
-			const openRouterPayload = {
-				model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
-				messages: [
-					{
-						role: "user",
-						content: `Assume you are a old skilled professor who knows everything, A student given you a text of a book and a question related to that book, Now return a json format data in which consists an answer key whose value is the answer that you will give for the question (ensure whatever you give must satisfy with the book text). all these are retreived from the text that the student have provided. Here is the book :${data.text} and question`,
-					},
-					{
-						role: "assistant",
-						content: "{answer:...}",
-					},
-				],
-			};
-			try {
-				const response = await axios.post(`${process.env.NEXT_PUBLIC_AI_URL}`, openRouterPayload, {
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${process.env.AI_API_KEY}`,
-					},
-				});
-				// Log or use the response as needed
-				console.log("OpenRouter response:", response.data);
-				return new Response(JSON.stringify({ text: response.data }), {
-					headers: { "Content-Type": "application/json" },
-					status: 200,
-				});
-			} catch (apiErr) {
-				console.error("OpenRouter API error:", apiErr);
-				// Optional: return error to client
-				return new Response(JSON.stringify({ error: apiErr }), {
-					headers: { "Content-Type": "application/json" },
-					status: 500,
-				});
-			}
-		} else if (fileType === "text/plain") {
-			const text = buffer.toString("utf-8");
+    // Filter out null documents and combine relevant context from retrieved chunks
+    const validDocuments = searchResults.documents.filter((doc): doc is string => doc !== null && doc !== undefined);
+    
+    if (validDocuments.length === 0) {
+      return NextResponse.json({
+        success: true,
+        answer: "I couldn't find relevant information in the document to answer your question. Please try rephrasing your question or ask about different topics covered in the document.",
+        sources: [],
+        query: question
+      });
+    }
 
-			const openRouterPayload = {
-				model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
-				messages: [
-					{
-						role: "user",
-						content: `Assume you are a old skilled professor who knows everything, A student given you a text of a book and a question related to that book, Now return a json format data in which consists an answer key whose value is the answer that you will give for the question (ensure whatever you give must satisfy with the book text). all these are retreived from the text that the student have provided. Here is the book :${text} and question`,
-					},
-					{
-						role: "assistant",
-						content: "{answer:...}",
-					},
-				],
-			};
+    const context = validDocuments
+      .map((doc, index) => `[Source ${index + 1}]: ${doc}`)
+      .join('\n\n');
 
-			try {
-				const response = await axios.post(`${process.env.NEXT_PUBLIC_AI_URL}`, openRouterPayload, {
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${process.env.AI_API_KEY}`,
-					},
-				});
-				// Log or use the response as needed
-				console.log("OpenRouter response:", response.data);
-				return new Response(JSON.stringify({ text: response.data }), {
-					headers: { "Content-Type": "application/json" },
-					status: 200,
-				});
-			} catch (apiErr) {
-				console.error("OpenRouter API error:", apiErr);
-				// Optional: return error to client
-				return new Response(JSON.stringify({ error: apiErr }), {
-					headers: { "Content-Type": "application/json" },
-					status: 500,
-				});
-			}
-		} else {
-			return new Response(JSON.stringify({ error: "Unsupported file type" }), { status: 415 });
-		}
-	} catch (err) {
-		console.error("File parsing error:", err);
-		return new Response(JSON.stringify({ error: "Failed to parse file" }), { status: 500 });
-	}
+    console.log(`Retrieved ${validDocuments.length} relevant chunks`);
+
+    // Build RAG prompt with retrieved context
+    const systemPrompt = `You are a helpful AI assistant. Answer questions based ONLY on the provided document context. 
+    If the answer isn't clearly in the context, say so. Always be accurate and cite which source number you're referencing when possible.
+    Be comprehensive but concise in your answers.`;
+
+    const userPrompt = `Context from document:
+${context}
+
+Question: ${question}
+
+Please provide a comprehensive answer based on the context above. If you reference specific information, mention which source number it came from.`;
+
+    const openRouterPayload = {
+      model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ],
+      temperature: 0.3, // Lower temperature for more focused answers
+      max_tokens: 1000
+    };
+
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_AI_URL}`, openRouterPayload, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.AI_API_KEY}`
+      }
+    });
+
+    // Prepare sources with relevance scores and metadata
+    // Filter out null documents and map with proper null checking
+    const sources = searchResults.documents
+      .map((doc, index) => {
+        if (!doc) return null; // Skip null documents
+        
+        return {
+          content: doc.length > 200 ? doc.substring(0, 200) + '...' : doc,
+          fullContent: doc,
+          relevanceScore: 1 - (searchResults.distances?.[index] || 0), // Convert distance to similarity
+          metadata: searchResults.metadatas?.[index] || {},
+          sourceNumber: index + 1
+        };
+      })
+      .filter((source): source is NonNullable<typeof source> => source !== null); // Remove null sources
+
+    const answer = response.data.choices[0].message.content;
+
+    console.log(`Generated RAG response for question: "${question}"`);
+
+    return NextResponse.json({
+      success: true,
+      answer,
+      sources,
+      query: question,
+      retrievedChunks: validDocuments.length,
+      ragEnabled: true
+    });
+
+  } catch (error) {
+    console.error('ChromaDB RAG chat error:', error);
+    return NextResponse.json({ 
+      error: 'Failed to process chat request',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  }
 }

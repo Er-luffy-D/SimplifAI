@@ -1,4 +1,4 @@
-import { ChromaClient, DefaultEmbeddingFunction } from 'chromadb';
+import { ChromaClient, DefaultEmbeddingFunction, IncludeEnum } from 'chromadb';
 import { v4 as uuidv4 } from 'uuid';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -12,9 +12,7 @@ export class ChromaService {
       path: process.env.CHROMA_URL || "http://localhost:8000"
     });
     
-    // Use consistent embedding function for all operations
     this.embeddingFunction = new DefaultEmbeddingFunction();
-    
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   }
 
@@ -24,8 +22,8 @@ export class ChromaService {
       const result = await model.embedContent(text);
       return result.embedding.values;
     } catch (error) {
-      console.error('Error generating embedding:', error);
-      throw error;
+      console.error('Embedding generation error:', error);
+      throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -38,30 +36,50 @@ export class ChromaService {
         embeddingFunction: this.embeddingFunction
       });
     } catch (error) {
-      // Collection doesn't exist, create it
-      return await this.client.createCollection({
-        name: collectionName,
-        embeddingFunction: this.embeddingFunction,
-        metadata: { fileId }
-      });
+      console.log(`Collection ${collectionName} not found, creating new one...`);
+      try {
+        return await this.client.createCollection({
+          name: collectionName,
+          embeddingFunction: this.embeddingFunction,
+          metadata: { 
+            fileId,
+            createdAt: new Date().toISOString(),
+            description: `Document chunks for file ${fileId}`
+          }
+        });
+      } catch (createError) {
+        console.error('Failed to create collection:', createError);
+        throw new Error(`Failed to create ChromaDB collection: ${createError instanceof Error ? createError.message : 'Unknown error'}`);
+      }
     }
   }
 
   async addDocumentChunks(fileId: string, chunks: string[]): Promise<void> {
+    if (!chunks || chunks.length === 0) {
+      throw new Error('No chunks provided for storage');
+    }
+
     try {
+      console.log(`🔄 Adding ${chunks.length} chunks to ChromaDB for fileId: ${fileId}`);
+      
       const collection = await this.getOrCreateCollection(fileId);
       
-      // Generate embeddings for all chunks using Gemini
+      // Generate embeddings for all chunks
+      console.log(`🔄 Generating embeddings for ${chunks.length} chunks...`);
       const embeddings = await Promise.all(
-        chunks.map(chunk => this.generateEmbedding(chunk))
+        chunks.map((chunk, index) => {
+          console.log(`Generating embedding ${index + 1}/${chunks.length}`);
+          return this.generateEmbedding(chunk);
+        })
       );
       
       const ids = chunks.map(() => uuidv4());
-      const metadatas = chunks.map((_, index) => ({
+      const metadatas = chunks.map((chunk, index) => ({
         fileId,
         chunkIndex: index,
+        chunkLength: chunk.length,
         timestamp: new Date().toISOString(),
-        length: chunks[index].length
+        preview: chunk.substring(0, 100) + (chunk.length > 100 ? '...' : '')
       }));
 
       await collection.add({
@@ -71,10 +89,11 @@ export class ChromaService {
         metadatas
       });
 
-      console.log(`Added ${chunks.length} chunks to collection for fileId: ${fileId}`);
+      console.log(`✅ Successfully added ${chunks.length} chunks to ChromaDB`);
+      
     } catch (error) {
       console.error('Error adding document chunks:', error);
-      throw error;
+      throw new Error(`Failed to store chunks in ChromaDB: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -82,13 +101,14 @@ export class ChromaService {
     try {
       const collection = await this.getOrCreateCollection(fileId);
       
-      // Generate embedding for the query using Gemini
+      // Generate embedding for the query
       const queryEmbedding = await this.generateEmbedding(query);
       
       const results = await collection.query({
         queryEmbeddings: [queryEmbedding],
         nResults,
-        where: { fileId }
+        where: { fileId },
+        include: [IncludeEnum.Documents, IncludeEnum.Distances, IncludeEnum.Metadatas]
       });
 
       return {
@@ -96,9 +116,10 @@ export class ChromaService {
         distances: results.distances?.[0] || [],
         metadatas: results.metadatas?.[0] || []
       };
+      
     } catch (error) {
       console.error('Error querying documents:', error);
-      throw error;
+      throw new Error(`Failed to query ChromaDB: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -106,9 +127,9 @@ export class ChromaService {
     const collectionName = `doc_${fileId.replace(/[^a-zA-Z0-9]/g, '_')}`;
     try {
       await this.client.deleteCollection({ name: collectionName });
-      console.log(`Deleted collection: ${collectionName}`);
+      console.log(`✅ Deleted collection: ${collectionName}`);
     } catch (error) {
-      console.log(`Collection ${collectionName} not found or already deleted`);
+      console.log(`⚠️ Collection ${collectionName} not found or already deleted`);
     }
   }
 

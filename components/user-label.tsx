@@ -19,27 +19,27 @@ export function UserLabel() {
 		return () => document.removeEventListener("mousedown", handle);
 	}, [open]);
 
-	// Nice gradient for email
+	// Nice gradient for name
 	return (
 		<div className="fixed top-6 right-5 z-50 flex items-center" ref={menuRef}>
 			{status === "loading" ? (
 				<div className="rounded-full px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-gray-300 animate-pulse select-none min-w-[120px] text-center">
 					Loading...
 				</div>
-			) : session?.user?.email ? (
+			) : session?.user?.name ? (
 				<div className="relative">
 					<button
 						className="flex items-center gap-2 rounded-full px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/40 hover:scale-105 transition-all font-medium text-white shadow shadow-purple-950/10"
 						onClick={() => setOpen((v) => !v)}
 						aria-haspopup="true"
 						aria-expanded={open}
-						title={session.user.email ?? ""}
+						title={session.user.name ?? ""}
 						data-cursor="hover"
 						data-cursor-text="User Menu"
 					>
 						<User className="w-5 h-5 text-purple-300" />
 						<span className="bg-gradient-to-r from-purple-300 via-pink-400 to-purple-300 bg-clip-text text-transparent max-w-[180px] truncate">
-							{session.user.email}
+							{session.user.name}
 						</span>
 					</button>
 					{open && (

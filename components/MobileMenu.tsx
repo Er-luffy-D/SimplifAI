@@ -4,13 +4,15 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 
-export default function MobileMenu({ onClose }: { onClose: () => void }) {
+export default function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
 	const { data: session } = useSession();
 
 	useEffect(() => {
-		document.body.classList.add("overflow-hidden");
+		if (open) {
+			document.body.classList.add("overflow-hidden");
+		}
 		return () => document.body.classList.remove("overflow-hidden");
-	}, []);
+	}, [open]);
 
 	const menuItems = [
 		{ label: "Home", href: "/" },
@@ -18,20 +20,22 @@ export default function MobileMenu({ onClose }: { onClose: () => void }) {
 		{ label: "Pricing", href: "/pricing" },
 	];
 
+	if (!open) return null;
+
 	return (
 		<>
 			{/* Overlay */}
 			<div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} aria-label="Close menu overlay" />
 			{/* Toast-like popup menu */}
 			<div className="fixed top-4 left-4 z-50">
-				<div className="bg-gray-950/95 border border-gray-800 shadow-2xl rounded-2xl w-72 max-w-[90vw] p-0 animate-fade-in">
-					<div className="flex items-center justify-between px-5 py-4 border-b border-gray-800">
+				<div className="bg-card/95 border border-border shadow-2xl rounded-2xl w-72 max-w-[90vw] p-0 animate-fade-in backdrop-blur-sm">
+					<div className="flex items-center justify-between px-5 py-4 border-b border-border">
 						<span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
 							Simplifai
 						</span>
 						<button
 							aria-label="Close Menu"
-							className="text-purple-400 hover:text-pink-400 transition"
+							className="text-muted-foreground hover:text-foreground transition"
 							onClick={onClose}
 						>
 							<X className="w-7 h-7" />
@@ -42,7 +46,7 @@ export default function MobileMenu({ onClose }: { onClose: () => void }) {
 							<li key={item.href}>
 								<Link
 									href={item.href}
-									className="block py-3 px-3 rounded-lg text-lg font-medium text-gray-200 hover:bg-purple-700/20 hover:text-purple-300 transition"
+									className="block py-3 px-3 rounded-lg text-lg font-medium text-muted-foreground hover:bg-primary/10 hover:text-foreground transition"
 									onClick={onClose}
 								>
 									{item.label}
@@ -52,7 +56,7 @@ export default function MobileMenu({ onClose }: { onClose: () => void }) {
 						<li>
 							{session ? (
 								<button
-									className="block w-full text-left py-3 px-3 rounded-lg text-lg font-medium text-gray-200 hover:bg-purple-700/20 hover:text-purple-300 transition"
+									className="block w-full text-left py-3 px-3 rounded-lg text-lg font-medium text-muted-foreground hover:bg-primary/10 hover:text-foreground transition"
 									onClick={() => {
 										signOut();
 										onClose();
@@ -63,7 +67,7 @@ export default function MobileMenu({ onClose }: { onClose: () => void }) {
 							) : (
 								<Link
 									href="/signin"
-									className="block py-3 px-3 rounded-lg text-lg font-medium text-gray-200 hover:bg-purple-700/20 hover:text-purple-300 transition"
+									className="block py-3 px-3 rounded-lg text-lg font-medium text-muted-foreground hover:bg-primary/10 hover:text-foreground transition"
 									onClick={onClose}
 								>
 									Sign In

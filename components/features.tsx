@@ -69,7 +69,7 @@ export function Features() {
 						<div className={`h-32 w-32 ${feature.borderColor} opacity-[0.7]`} />
 					</MovingBorder>
 
-					<div className="relative flex flex-col items-center justify-center rounded-xl bg-card p-6 text-center">
+					<div className="relative flex flex-col items-center justify-center rounded-xl bg-card p-6 text-center border border-border/50">
 						<div
 							className={`mb-4 rounded-full ${feature.bgGradient} group-hover:scale-110 transition-all duration-300 flex items-center justify-center w-16 h-16 aspect-square`}
 						>

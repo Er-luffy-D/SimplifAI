@@ -80,7 +80,7 @@ export default function AboutPage() {
 	];
 
 	return (
-		<div ref={containerRef} className="min-h-screen bg-black text-white">
+		<div ref={containerRef} className="min-h-screen bg-background text-foreground">
 			{/* Animated background with parallax */}
 			<div className="fixed inset-0 -z-10 pointer-events-none">
 				<div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-morphing" data-parallax="0.3" />
@@ -90,31 +90,31 @@ export default function AboutPage() {
 			</div>
 
 			{/* Header */}
-			<div className="relative z-10 border-b border-gray-800/50 backdrop-blur-sm">
+			<div className="relative z-10 border-b border-border/50 backdrop-blur-sm">
 				<div className="container mx-auto px-4 py-6">
 					<div className="flex items-center justify-between">
 						<Link
 							href="/"
-							className="text-2xl  hidden md:flex font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+							className="text-2xl hidden md:flex font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
 						>
 							Simplifai
 						</Link>
 						<div
-							className="text-2xl md:hidden  font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+							className="text-2xl md:hidden font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
 							onClick={() => setMenuOpen(!menuOpen)}
 						>
 							Simplifai
 						</div>
-						{menuOpen && <MobileMenu onClose={() => setMenuOpen(false)} />}
+						{menuOpen && <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />}
 
 						<nav className="hidden md:flex space-x-8">
-							<Link href="/" className="text-gray-300 hover:text-white transition-colors duration-300">
+							<Link href="/" className="text-muted-foreground hover:text-foreground transition-colors duration-300">
 								Home
 							</Link>
-							<Link href="/pricing" className="text-gray-300 hover:text-white transition-colors duration-300">
+							<Link href="/pricing" className="text-muted-foreground hover:text-foreground transition-colors duration-300">
 								Pricing
 							</Link>
-							<Link href="/about" className="text-white font-medium">
+							<Link href="/about" className="text-foreground font-medium">
 								About
 							</Link>
 						</nav>
@@ -138,7 +138,7 @@ export default function AboutPage() {
 						with AI
 					</h1>
 
-					<p className="text-xl text-gray-400 max-w-4xl mx-auto mb-16 leading-relaxed" data-animate="fade-up">
+					<p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-16 leading-relaxed" data-animate="fade-up">
 						We&apos;re on a mission to make learning more efficient, engaging, and accessible for everyone. Our
 						cutting-edge AI transforms how people consume, understand, and retain information.
 					</p>
@@ -201,7 +201,7 @@ export default function AboutPage() {
 								>
 									{stat.number}
 								</div>
-								<div className="text-gray-500 text-sm">{stat.label}</div>
+								<div className="text-muted-foreground text-sm">{stat.label}</div>
 							</div>
 						))}
 					</div>
@@ -210,153 +210,128 @@ export default function AboutPage() {
 
 			{/* Mission Section */}
 			<div className="relative z-10 container mx-auto px-4 py-20">
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
-					<div data-animate="slide-left">
-						<h2 className="text-4xl font-bold mb-8" data-animate="text-reveal">Our Mission</h2>
-						<div className="space-y-6 text-lg text-gray-300 leading-relaxed">
-							<p data-animate="fade-up">
-								Traditional learning methods often leave students overwhelmed, disengaged, and struggling to retain
-								information. We saw an opportunity to change that fundamentally.
-							</p>
-							<p data-animate="fade-up">
-								Our AI-powered platform transforms dense, complex documents into personalized learning experiences that
-								adapt to each individual&apos;s pace, style, and goals.
-							</p>
-							<p data-animate="fade-up">
-								We believe that with the right tools, anyone can master any subject. That&apos;s why we&apos;re building
-								the future of education—one learner at a time.
-							</p>
-						</div>
-						<MagneticButton
-							className="mt-8 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-4 h-auto shadow-lg shadow-purple-500/25"
-							onClick={() => window.open("https://github.com/Er-luffy-d")}
-							cursorText="Github"
-							data-animate="scale-in"
-						>
-							Check Github <Github className="inline-block w-5 h-5" />
-						</MagneticButton>
-					</div>
+				<div className="text-center mb-16">
+					<h2 className="text-4xl font-bold mb-6" data-animate="text-reveal">Our Mission</h2>
+					<p className="text-xl text-muted-foreground max-w-3xl mx-auto" data-animate="fade-up">
+						To democratize education by making AI-powered learning tools accessible to everyone, everywhere.
+					</p>
+				</div>
 
-					<div className="relative" data-animate="slide-right">
-						<div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-3xl blur-3xl animate-pulse-gentle" data-parallax="0.1" />
-						<Card
-							className="relative bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:scale-105 overflow-hidden"
-							style={{
-								backgroundImage: "url(/avatar.png)",
-								backgroundSize: "contain",
-								backgroundBlendMode: "multiply",
-								backgroundRepeat: "no-repeat",
-								backgroundPosition: "left",
-							}}
-							data-cursor="hover"
-							data-cursor-text="Our Vision"
-						>
-							<CardContent className="p-12 text-center">
-								<div className="mb-8">
-									<Zap className="w-20 h-20 mx-auto text-purple-400 animate-bounce-slow" />
-								</div>
-								<h3 className="text-2xl font-bold mb-6" data-animate="text-reveal">Powered by Curiosity</h3>
-								<p className="text-white/80 leading-relaxed" data-animate="fade-up">
-									SimplifAI was born out of a simple idea: to make learning easier, faster, and more enjoyable for
-									everyone.
-								</p>
-							</CardContent>
-						</Card>
-					</div>
+				<div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+					<Card
+						className="relative bg-card/50 backdrop-blur-sm border border-border/50 hover:border-border transition-all duration-500 hover:scale-105 overflow-hidden"
+						data-cursor="hover"
+						data-cursor-text="Our Vision"
+						data-animate="slide-in-left"
+					>
+						<CardHeader>
+							<div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg animate-scale-in-bounce">
+								<Lightbulb className="w-8 h-8" />
+							</div>
+							<CardTitle className="text-2xl text-center" data-animate="text-reveal">Our Vision</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<p className="text-muted-foreground leading-relaxed" data-animate="fade-up">
+								A world where learning is personalized, engaging, and accessible to everyone. We envision a future where AI
+								augments human intelligence, making education more effective and enjoyable.
+							</p>
+						</CardContent>
+					</Card>
+
+					<Card
+						className="relative bg-card/50 backdrop-blur-sm border border-border/50 hover:border-border transition-all duration-500 hover:scale-105 overflow-hidden"
+						data-cursor="hover"
+						data-cursor-text="Our Approach"
+						data-animate="slide-in-right"
+					>
+						<CardHeader>
+							<div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg animate-scale-in-bounce">
+								<Rocket className="w-8 h-8" />
+							</div>
+							<CardTitle className="text-2xl text-center" data-animate="text-reveal">Our Approach</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<p className="text-muted-foreground leading-relaxed" data-animate="fade-up">
+								We combine cutting-edge AI technology with user-centered design to create tools that adapt to individual
+								learning styles and preferences.
+							</p>
+						</CardContent>
+					</Card>
 				</div>
 			</div>
 
 			{/* Values Section */}
 			<div className="relative z-10 container mx-auto px-4 py-20">
 				<div className="text-center mb-16">
-					<h2 className="text-4xl font-bold mb-6" data-animate="text-reveal">Our Core Values</h2>
-					<p className="text-xl text-gray-400 max-w-2xl mx-auto" data-animate="fade-up">
-						The fundamental principles that guide everything we do
+					<h2 className="text-4xl font-bold mb-6" data-animate="text-reveal">Our Values</h2>
+					<p className="text-xl text-muted-foreground max-w-3xl mx-auto" data-animate="fade-up">
+						The principles that guide everything we do
 					</p>
 				</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto" data-animate="stagger">
+				<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
 					{values.map((value, index) => (
 						<Card
 							key={index}
-							className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:scale-105 cursor-pointer"
+							className="group bg-card/50 backdrop-blur-sm border border-border/50 hover:border-border transition-all duration-500 hover:scale-105 cursor-pointer"
 							data-cursor="hover"
 							data-cursor-text={value.title}
+							data-animate="fade-in-up"
+							style={{ animationDelay: `${index * 200}ms` }}
 						>
-							<CardHeader className="pb-6">
-								<div className="flex items-start gap-6">
-									<div
-										className={`p-4 rounded-2xl bg-gradient-to-r ${value.gradient} group-hover:scale-110 transition-transform duration-300 flex-shrink-0 animate-rotate-in`}
-									>
-										<div className="text-white">{value.icon}</div>
-									</div>
-									<div>
-										<CardTitle className="text-xl mb-3 group-hover:text-purple-400 transition-colors duration-300" data-animate="text-reveal">
-											{value.title}
-										</CardTitle>
-										<p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300" data-animate="fade-up">
-											{value.description}
-										</p>
-									</div>
+							<CardHeader className="text-center">
+								<div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300 animate-scale-in-bounce">
+									<div className="text-white">{value.icon}</div>
 								</div>
+								<CardTitle className="text-xl" data-animate="text-reveal">{value.title}</CardTitle>
 							</CardHeader>
+							<CardContent>
+								<p className="text-muted-foreground text-center" data-animate="fade-up">
+									{value.description}
+								</p>
+							</CardContent>
 						</Card>
 					))}
 				</div>
 			</div>
 
-			{/* Timeline Section */}
+			{/* Journey Section */}
 			<div className="relative z-10 container mx-auto px-4 py-20">
 				<div className="text-center mb-16">
 					<h2 className="text-4xl font-bold mb-6" data-animate="text-reveal">Our Journey</h2>
-					<p className="text-xl text-gray-400 max-w-2xl mx-auto" data-animate="fade-up">
-						Key milestones in our mission to transform learning
+					<p className="text-xl text-muted-foreground max-w-3xl mx-auto" data-animate="fade-up">
+						Key milestones in our mission to revolutionize learning
 					</p>
 				</div>
 
 				<div className="max-w-4xl mx-auto">
-					<div className="relative">
-						{/* Timeline line */}
-						<div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-purple-500 to-pink-500" data-animate="slide-in-top" />
-
+					<div className="grid gap-8">
 						{milestones.map((milestone, index) => (
-							<div
+							<Card
 								key={index}
-								className={`relative flex items-center mb-16 ${
-									index % 2 === 0 ? "justify-start" : "justify-end"
+								className={`w-full max-w-md bg-card/50 backdrop-blur-sm border border-border/50 hover:border-border transition-all duration-500 hover:scale-105 group ${
+									index % 2 === 0 ? "md:ml-auto" : "md:mr-auto"
 								}`}
-								data-animate="fade-up"
+								data-cursor="hover"
+								data-cursor-text={milestone.event}
+								data-animate="fade-in-up"
+								style={{ animationDelay: `${index * 300}ms` }}
 							>
-								<Card
-									className={`w-full max-w-md bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:scale-105 group ${
-										index % 2 === 0 ? "mr-8" : "ml-8"
-									}`}
-									data-cursor="hover"
-									data-cursor-text={milestone.event}
-								>
-									<CardHeader>
-										<div className="flex items-center gap-4 mb-4">
-											<div className="p-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 group-hover:scale-110 transition-transform duration-300 animate-rotate-in">
-												<div className="text-white">{milestone.icon}</div>
-											</div>
-											<Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 font-semibold animate-glow">
-												{milestone.year}
-											</Badge>
-										</div>
-										<CardTitle className="text-xl group-hover:text-purple-400 transition-colors duration-300" data-animate="text-reveal">
-											{milestone.event}
-										</CardTitle>
-									</CardHeader>
-									<CardContent>
-										<p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300" data-animate="fade-up">
-											{milestone.description}
-										</p>
-									</CardContent>
-								</Card>
-
-								{/* Timeline dot */}
-								<div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full border-4 border-black animate-pulse-gentle" />
-							</div>
+								<CardHeader className="text-center">
+									<div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300 animate-scale-in-bounce">
+										<div className="text-white">{milestone.icon}</div>
+									</div>
+									<Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 font-semibold animate-glow">
+										{milestone.year}
+									</Badge>
+									<CardTitle className="text-xl mt-4" data-animate="text-reveal">{milestone.event}</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<p className="text-muted-foreground text-center" data-animate="fade-up">
+										{milestone.description}
+									</p>
+								</CardContent>
+							</Card>
 						))}
 					</div>
 				</div>
@@ -366,33 +341,37 @@ export default function AboutPage() {
 			<div className="relative z-10 container mx-auto px-4 py-20">
 				<div className="text-center mb-16">
 					<h2 className="text-4xl font-bold mb-6" data-animate="text-reveal">Meet Our Team</h2>
-					<p className="text-xl text-gray-400 max-w-2xl mx-auto" data-animate="fade-up">
-						The brilliant minds behind Simplifai&apos;s innovation
+					<p className="text-xl text-muted-foreground max-w-3xl mx-auto" data-animate="fade-up">
+						The passionate minds behind SimplifAI
 					</p>
 				</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto" data-animate="stagger">
+				<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
 					{team.map((member, index) => (
 						<Card
 							key={index}
-							className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:scale-105 cursor-pointer lg:col-span-4 md:col-span-2 col-span-1"
+							className="group bg-card/50 backdrop-blur-sm border border-border/50 hover:border-border transition-all duration-500 hover:scale-105 cursor-pointer lg:col-span-4 md:col-span-2 col-span-1"
 							data-cursor="hover"
 							data-cursor-text={member.name}
+							data-animate="fade-in-up"
+							style={{ animationDelay: `${index * 200}ms` }}
 						>
-							<CardHeader className="text-center pb-6">
+							<CardHeader className="text-center">
 								<div
 									className={`w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${member.gradient} flex items-center justify-center text-white text-2xl font-bold group-hover:scale-110 transition-transform duration-300 shadow-lg animate-scale-in-bounce`}
 								>
 									{member.initials}
 								</div>
-								<CardTitle className="text-lg mb-2 group-hover:text-purple-400 transition-colors duration-300" data-animate="text-reveal">
-									{member.name}
-								</CardTitle>
-								<CardDescription className="text-purple-400 font-medium mb-4" data-animate="fade-up">{member.role}</CardDescription>
-								<p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors duration-300" data-animate="fade-up">
+								<CardTitle className="text-xl" data-animate="text-reveal">{member.name}</CardTitle>
+								<CardDescription className="text-muted-foreground" data-animate="fade-up">
+									{member.role}
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<p className="text-muted-foreground text-center leading-relaxed" data-animate="fade-up">
 									{member.bio}
 								</p>
-							</CardHeader>
+							</CardContent>
 						</Card>
 					))}
 				</div>
@@ -400,36 +379,27 @@ export default function AboutPage() {
 
 			{/* CTA Section */}
 			<div className="relative z-10 container mx-auto px-4 py-20">
-				<div className="max-w-4xl mx-auto text-center">
-					<div className="relative bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-3xl p-12 border border-purple-500/20 backdrop-blur-sm" data-animate="scale-in">
-						<div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-3xl blur-xl" data-parallax="0.1" />
-						<div className="relative z-10">
-							<Rocket className="w-16 h-16 mx-auto mb-6 text-purple-400 animate-bounce-slow" />
-							<h2 className="text-4xl font-bold mb-6" data-animate="text-reveal">Ready to Join Our Mission?</h2>
-							<p className="text-xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed" data-animate="fade-up">
-								Whether you&apos;re a learner looking to accelerate your education or a developer wanting to contribute
-								to the future of learning, we&apos;d love to have you on board.
-							</p>
-							<div className="flex flex-col sm:flex-row gap-4 justify-center" data-animate="stagger">
-								<MagneticButton
-									size="lg"
-									className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-4 h-auto shadow-lg shadow-purple-500/25"
-									onClick={() => window.open("https://simplif-ai-xi.vercel.app/", "_blank")}
-									cursorText="Start Learning"
-								>
-									Start Learning Today
-								</MagneticButton>
-								<MagneticButton
-									size="lg"
-									variant="outline"
-									className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-gray-500 px-8 py-4 h-auto"
-									onClick={() => window.open("https://linkedin.com/in/piyushdixitizme", "_blank")}
-									cursorText="Connect"
-								>
-									Connect
-								</MagneticButton>
-							</div>
-						</div>
+				<div className="text-center max-w-4xl mx-auto">
+					<h2 className="text-4xl font-bold mb-6" data-animate="text-reveal">Ready to Transform Your Learning?</h2>
+					<p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto" data-animate="fade-up">
+						Join thousands of learners who are already using SimplifAI to accelerate their education.
+					</p>
+					<div className="flex flex-col sm:flex-row gap-4 justify-center" data-animate="stagger">
+						<MagneticButton
+							className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-4 h-auto shadow-lg shadow-purple-500/25"
+							data-cursor="button"
+							data-cursor-text="Get Started"
+						>
+							Get Started Free
+						</MagneticButton>
+						<MagneticButton
+							variant="outline"
+							className="border-border text-muted-foreground hover:bg-muted hover:border-border px-8 py-4 h-auto"
+							data-cursor="button"
+							data-cursor-text="Learn More"
+						>
+							Learn More
+						</MagneticButton>
 					</div>
 				</div>
 			</div>

@@ -26,14 +26,14 @@ export default function ForgotPasswordPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center p-6">
+		<div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
 			{/* Animated background */}
 			<div className="fixed inset-0 -z-10">
 				<div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-full blur-3xl animate-float-slow" />
 				<div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 rounded-full blur-3xl animate-float-slower" />
 
 				{/* Grid pattern */}
-				<div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.02)_1px,transparent_0)] bg-[length:50px_50px]" />
+				<div className="absolute inset-0 bg-grid-pattern opacity-5 dark:opacity-10" />
 			</div>
 
 			{/* Floating icons */}
@@ -55,12 +55,12 @@ export default function ForgotPasswordPage() {
 					</Link>
 				</div>
 
-				<Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm">
+				<Card className="bg-card/50 border-border/50 backdrop-blur-sm">
 					{!isSubmitted ? (
 						<>
 							<CardHeader className="space-y-1">
-								<CardTitle className="text-2xl text-center text-white">Reset Password</CardTitle>
-								<CardDescription className="text-center text-zinc-400">
+								<CardTitle className="text-2xl text-center">Reset Password</CardTitle>
+								<CardDescription className="text-center">
 									Enter your email address and we&apos;ll send you a link to reset your password
 								</CardDescription>
 							</CardHeader>
@@ -68,18 +68,18 @@ export default function ForgotPasswordPage() {
 							<CardContent>
 								<form onSubmit={handleSubmit} className="space-y-4">
 									<div className="space-y-2">
-										<Label htmlFor="email" className="text-zinc-300">
+										<Label htmlFor="email" className="text-muted-foreground">
 											Email
 										</Label>
 										<div className="relative">
-											<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
+											<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 											<Input
 												id="email"
 												type="email"
 												placeholder="Enter your email"
 												value={email}
 												onChange={(e) => setEmail(e.target.value)}
-												className="pl-10 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500"
+												className="pl-10 bg-input/50 border-border text-foreground placeholder:text-muted-foreground focus:border-purple-500"
 												required
 											/>
 										</div>
@@ -101,42 +101,59 @@ export default function ForgotPasswordPage() {
 									</Button>
 								</form>
 							</CardContent>
+
+							<CardFooter>
+								<Link
+									href="/signin"
+									className="flex items-center justify-center w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+								>
+									<ArrowLeft className="w-4 h-4 mr-2" />
+									Back to Sign In
+								</Link>
+							</CardFooter>
 						</>
 					) : (
 						<>
-							<CardHeader className="text-center">
-								<div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
-									<CheckCircle className="w-8 h-8 text-white" />
+							<CardHeader className="space-y-1">
+								<div className="flex justify-center mb-4">
+									<CheckCircle className="w-16 h-16 text-green-500" />
 								</div>
-								<CardTitle className="text-2xl text-white">Check your email</CardTitle>
-								<CardDescription className="text-zinc-400">
-									We&apos;ve sent a password reset link to <strong className="text-white">{email}</strong>
+								<CardTitle className="text-2xl text-center">Check Your Email</CardTitle>
+								<CardDescription className="text-center">
+									We&apos;ve sent a password reset link to <strong>{email}</strong>
 								</CardDescription>
 							</CardHeader>
 
-							<CardContent className="text-center space-y-4">
-								<p className="text-sm text-zinc-400">
-									Didn&apos;t receive the email? Check your spam folder or{" "}
-									<button
-										onClick={() => setIsSubmitted(false)}
-										className="text-purple-400 hover:text-purple-300 underline"
-									>
-										try again
-									</button>
-								</p>
+							<CardContent>
+								<div className="text-center space-y-4">
+									<p className="text-muted-foreground">
+										Click the link in your email to reset your password. The link will expire in 1 hour.
+									</p>
+									<div className="bg-muted/50 rounded-lg p-4">
+										<p className="text-sm text-muted-foreground">
+											Didn&apos;t receive the email? Check your spam folder or{" "}
+											<button
+												onClick={() => setIsSubmitted(false)}
+												className="text-purple-400 hover:text-purple-300 font-medium"
+											>
+												try again
+											</button>
+										</p>
+									</div>
+								</div>
 							</CardContent>
+
+							<CardFooter>
+								<Link
+									href="/signin"
+									className="flex items-center justify-center w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+								>
+									<ArrowLeft className="w-4 h-4 mr-2" />
+									Back to Sign In
+								</Link>
+							</CardFooter>
 						</>
 					)}
-
-					<CardFooter>
-						<Link
-							href="/signin"
-							className="flex items-center justify-center w-full text-sm text-zinc-400 hover:text-white transition-colors"
-						>
-							<ArrowLeft className="w-4 h-4 mr-2" />
-							Back to sign in
-						</Link>
-					</CardFooter>
 				</Card>
 			</div>
 		</div>

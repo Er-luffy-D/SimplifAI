@@ -1,88 +1,119 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.75rem;
+
+    /* Custom gradient colors - Light mode */
+    --color-purple-400: 271 81% 56%;
+    --color-purple-500: 271 81% 56%;
+    --color-purple-600: 271 81% 56%;
+    --color-purple-950: 271 81% 56%;
+    --color-pink-400: 330 81% 60%;
+    --color-pink-500: 330 81% 60%;
+    --color-pink-600: 330 81% 60%;
+    --color-pink-950: 330 81% 60%;
+    --color-blue-400: 217 91% 60%;
+    --color-blue-500: 217 91% 60%;
+    --color-blue-600: 217 91% 60%;
+    --color-cyan-400: 187 85% 53%;
+    --color-cyan-500: 187 85% 53%;
+    --color-cyan-600: 187 85% 53%;
+    --color-green-400: 142 76% 36%;
+    --color-green-500: 142 76% 36%;
+    --color-green-600: 142 76% 36%;
+    --color-green-950: 142 76% 36%;
+    --color-emerald-400: 160 84% 39%;
+    --color-emerald-500: 160 84% 39%;
+    --color-emerald-600: 160 84% 39%;
+    --color-orange-500: 25 95% 53%;
+    --color-orange-600: 25 95% 53%;
+    --color-yellow-400: 48 96% 53%;
+    --color-yellow-500: 48 96% 53%;
+    --color-red-500: 0 84% 60%;
+    --color-red-600: 0 84% 60%;
+    --color-indigo-500: 238 83% 77%;
+    --color-indigo-600: 238 83% 77%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+
+    /* Custom gradient colors - Dark mode */
+    --color-purple-400: 271 81% 56%;
+    --color-purple-500: 271 81% 56%;
+    --color-purple-600: 271 81% 56%;
+    --color-purple-950: 271 81% 56%;
+    --color-pink-400: 330 81% 60%;
+    --color-pink-500: 330 81% 60%;
+    --color-pink-600: 330 81% 60%;
+    --color-pink-950: 330 81% 60%;
+    --color-blue-400: 217 91% 60%;
+    --color-blue-500: 217 91% 60%;
+    --color-blue-600: 217 91% 60%;
+    --color-cyan-400: 187 85% 53%;
+    --color-cyan-500: 187 85% 53%;
+    --color-cyan-600: 187 85% 53%;
+    --color-green-400: 142 76% 36%;
+    --color-green-500: 142 76% 36%;
+    --color-green-600: 142 76% 36%;
+    --color-green-950: 142 76% 36%;
+    --color-emerald-400: 160 84% 39%;
+    --color-emerald-500: 160 84% 39%;
+    --color-emerald-600: 160 84% 39%;
+    --color-orange-500: 25 95% 53%;
+    --color-orange-600: 25 95% 53%;
+    --color-yellow-400: 48 96% 53%;
+    --color-yellow-500: 48 96% 53%;
+    --color-red-500: 0 84% 60%;
+    --color-red-600: 0 84% 60%;
+    --color-indigo-500: 238 83% 77%;
+    --color-indigo-600: 238 83% 77%;
+  }
+}
+
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px);}
   to { opacity: 1; transform: translateY(0);}
 }
 .animate-fade-in-up { animation: fadeInUp 0.6s ease; }
-
-@theme {
-  --color-primary: oklch(0.6 0.2 270);
-  --color-primary-foreground: oklch(0.98 0.02 270);
-  --color-secondary: oklch(0.96 0.01 270);
-  --color-secondary-foreground: oklch(0.05 0.05 270);
-  --color-muted: oklch(0.96 0.01 270);
-  --color-muted-foreground: oklch(0.47 0.02 270);
-  --color-accent: oklch(0.96 0.01 270);
-  --color-accent-foreground: oklch(0.05 0.05 270);
-  --color-destructive: oklch(0.6 0.2 25);
-  --color-destructive-foreground: oklch(0.98 0.02 25);
-  --color-border: oklch(0.91 0.01 270);
-  --color-input: oklch(0.91 0.01 270);
-  --color-ring: oklch(0.6 0.2 270);
-  --color-background: oklch(1 0 0);
-  --color-foreground: oklch(0.05 0.05 270);
-  --color-card: oklch(1 0 0);
-  --color-card-foreground: oklch(0.05 0.05 270);
-  --color-popover: oklch(1 0 0);
-  --color-popover-foreground: oklch(0.05 0.05 270);
-
-  --radius: 0.75rem;
-
-  /* Custom gradient colors */
-  --color-purple-400: oklch(0.7 0.15 300);
-  --color-purple-500: oklch(0.65 0.18 300);
-  --color-purple-600: oklch(0.6 0.2 300);
-  --color-purple-950: oklch(0.15 0.05 300);
-  --color-pink-400: oklch(0.75 0.15 350);
-  --color-pink-500: oklch(0.7 0.18 350);
-  --color-pink-600: oklch(0.65 0.2 350);
-  --color-pink-950: oklch(0.15 0.05 350);
-  --color-blue-400: oklch(0.7 0.15 240);
-  --color-blue-500: oklch(0.65 0.18 240);
-  --color-blue-600: oklch(0.6 0.2 240);
-  --color-cyan-400: oklch(0.75 0.12 200);
-  --color-cyan-500: oklch(0.7 0.15 200);
-  --color-cyan-600: oklch(0.65 0.18 200);
-  --color-green-400: oklch(0.75 0.15 140);
-  --color-green-500: oklch(0.7 0.18 140);
-  --color-green-600: oklch(0.65 0.2 140);
-  --color-green-950: oklch(0.15 0.05 140);
-  --color-emerald-400: oklch(0.75 0.15 160);
-  --color-emerald-500: oklch(0.7 0.18 160);
-  --color-emerald-600: oklch(0.65 0.2 160);
-  --color-orange-500: oklch(0.7 0.18 60);
-  --color-orange-600: oklch(0.65 0.2 60);
-  --color-yellow-400: oklch(0.8 0.15 90);
-  --color-yellow-500: oklch(0.75 0.18 90);
-  --color-red-500: oklch(0.65 0.2 25);
-  --color-red-600: oklch(0.6 0.22 25);
-  --color-indigo-500: oklch(0.6 0.18 270);
-  --color-indigo-600: oklch(0.55 0.2 270);
-}
-
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-primary: oklch(0.65 0.18 270);
-    --color-primary-foreground: oklch(0.98 0.02 270);
-    --color-secondary: oklch(0.18 0.02 270);
-    --color-secondary-foreground: oklch(0.98 0.02 270);
-    --color-muted: oklch(0.18 0.02 270);
-    --color-muted-foreground: oklch(0.65 0.02 270);
-    --color-accent: oklch(0.18 0.02 270);
-    --color-accent-foreground: oklch(0.98 0.02 270);
-    --color-destructive: oklch(0.3 0.15 25);
-    --color-destructive-foreground: oklch(0.98 0.02 25);
-    --color-border: oklch(0.18 0.02 270);
-    --color-input: oklch(0.18 0.02 270);
-    --color-ring: oklch(0.65 0.18 270);
-    --color-background: oklch(0.05 0.05 270);
-    --color-foreground: oklch(0.98 0.02 270);
-    --color-card: oklch(0.05 0.05 270);
-    --color-card-foreground: oklch(0.98 0.02 270);
-    --color-popover: oklch(0.05 0.05 270);
-    --color-popover-foreground: oklch(0.98 0.02 270);
-  }
-}
 
 /* Custom utilities and animations */
 @layer utilities {
@@ -112,7 +143,7 @@
   .bg-grid-pattern {
     background-image: radial-gradient(
       circle at 1px 1px,
-      color-mix(in srgb, var(--color-foreground) 15%, transparent) 1px,
+      color-mix(in srgb, hsl(var(--foreground)) 15%, transparent) 1px,
       transparent 0
     );
     background-size: 20px 20px;
@@ -120,45 +151,45 @@
 
   /* Gradient utilities */
   .bg-gradient-purple-pink {
-    background: linear-gradient(135deg, var(--color-purple-500), var(--color-pink-500));
+    background: linear-gradient(135deg, hsl(var(--color-purple-500)), hsl(var(--color-pink-500)));
   }
 
   .bg-gradient-blue-cyan {
-    background: linear-gradient(135deg, var(--color-blue-500), var(--color-cyan-500));
+    background: linear-gradient(135deg, hsl(var(--color-blue-500)), hsl(var(--color-cyan-500)));
   }
 
   .bg-gradient-green-emerald {
-    background: linear-gradient(135deg, var(--color-green-500), var(--color-emerald-500));
+    background: linear-gradient(135deg, hsl(var(--color-green-500)), hsl(var(--color-emerald-500)));
   }
 
   .bg-gradient-orange-red {
-    background: linear-gradient(135deg, var(--color-orange-500), var(--color-red-500));
+    background: linear-gradient(135deg, hsl(var(--color-orange-500)), hsl(var(--color-red-500)));
   }
 
   .bg-gradient-indigo-purple {
-    background: linear-gradient(135deg, var(--color-indigo-500), var(--color-purple-500));
+    background: linear-gradient(135deg, hsl(var(--color-indigo-500)), hsl(var(--color-purple-500)));
   }
 
   .bg-gradient-primary-purple {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-purple-600));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--color-purple-600)));
   }
 
   .text-gradient-purple-pink {
-    background: linear-gradient(135deg, var(--color-purple-600), var(--color-pink-600));
+    background: linear-gradient(135deg, hsl(var(--color-purple-600)), hsl(var(--color-pink-600)));
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
   }
 
   .text-gradient-blue-cyan {
-    background: linear-gradient(135deg, var(--color-blue-600), var(--color-cyan-600));
+    background: linear-gradient(135deg, hsl(var(--color-blue-600)), hsl(var(--color-cyan-600)));
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
   }
 
   .text-gradient-green-emerald {
-    background: linear-gradient(135deg, var(--color-green-600), var(--color-emerald-600));
+    background: linear-gradient(135deg, hsl(var(--color-green-600)), hsl(var(--color-emerald-600)));
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -166,11 +197,11 @@
 
   /* Hover gradient utilities */
   .hover\:bg-gradient-purple-pink:hover {
-    background: linear-gradient(135deg, var(--color-purple-600), var(--color-pink-600));
+    background: linear-gradient(135deg, hsl(var(--color-purple-600)), hsl(var(--color-pink-600)));
   }
 
   .hover\:bg-gradient-primary-purple:hover {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-purple-600));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--color-purple-600)));
   }
 
   .animate-fade-in {
@@ -315,6 +346,11 @@
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .glass {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   /* Smooth transitions */
@@ -516,12 +552,12 @@
 
 /* Base styles */
 * {
-  border-color: var(--color-border);
+  border-color: hsl(var(--border));
 }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -536,14 +572,14 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-muted);
+  background: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
+  background: hsl(var(--primary));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--color-primary) 80%, transparent);
+  background: color-mix(in srgb, hsl(var(--primary)) 80%, transparent);
 }

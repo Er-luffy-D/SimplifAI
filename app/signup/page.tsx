@@ -66,7 +66,7 @@ export default function SignUpPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center p-6">
+		<div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
 			{toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 			{/* Animated background */}
 			<div className="fixed inset-0 -z-10">
@@ -75,7 +75,7 @@ export default function SignUpPage() {
 				<div className="absolute top-1/2 right-1/3 w-72 h-72 bg-gradient-to-r from-green-500/5 to-emerald-500/5 rounded-full blur-3xl animate-float" />
 
 				{/* Grid pattern */}
-				<div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.02)_1px,transparent_0)] bg-[length:50px_50px]" />
+				<div className="absolute inset-0 bg-grid-pattern opacity-5 dark:opacity-10" />
 			</div>
 
 			{/* Floating icons */}
@@ -96,13 +96,13 @@ export default function SignUpPage() {
 						</span>
 					</Link>
 					<h1 className="text-3xl font-bold mb-2">Create your account</h1>
-					<p className="text-zinc-400">Start your learning journey with AI-powered tools</p>
+					<p className="text-muted-foreground">Start your learning journey with AI-powered tools</p>
 				</div>
 
-				<Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm">
+				<Card className="bg-card border-border backdrop-blur-sm">
 					<CardHeader className="space-y-1">
-						<CardTitle className="text-2xl text-center text-white">Sign Up</CardTitle>
-						<CardDescription className="text-center text-zinc-400">Create your account to get started</CardDescription>
+						<CardTitle className="text-2xl text-center text-foreground">Sign Up</CardTitle>
+						<CardDescription className="text-center text-muted-foreground">Create your account to get started</CardDescription>
 					</CardHeader>
 
 					<CardContent className="space-y-6">
@@ -110,7 +110,7 @@ export default function SignUpPage() {
 						<div className="space-y-3">
 							<Button
 								variant="outline"
-								className="w-full border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-600"
+								className="w-full border-border text-muted-foreground hover:bg-muted hover:border-border"
 								onClick={() => handleSocialLogin("google")}
 							>
 								<Chrome className="w-4 h-4 mr-2" />
@@ -120,70 +120,70 @@ export default function SignUpPage() {
 
 						<div className="relative">
 							<div className="absolute inset-0 flex items-center">
-								<Separator className="w-full bg-zinc-800" />
+								<Separator className="w-full border-border" />
 							</div>
 							<div className="relative flex justify-center text-xs uppercase">
-								<span className="bg-zinc-900 px-2 text-zinc-500">Or continue with email</span>
+								<span className="bg-muted-foreground/10 px-2 text-muted-foreground">Or continue with email</span>
 							</div>
 						</div>
 
 						{/* Registration form */}
 						<form onSubmit={handleSubmit} className="space-y-4">
 							<div className="space-y-2">
-								<Label htmlFor="name" className="text-zinc-300">
+								<Label htmlFor="name" className="text-muted-foreground">
 									Full Name
 								</Label>
 								<div className="relative">
-									<User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
+									<User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 									<Input
 										id="name"
 										type="text"
 										placeholder="Enter your full name"
 										value={formData.name}
 										onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-										className="pl-10 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500"
+										className="pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-purple-500"
 										required
 									/>
 								</div>
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="email" className="text-zinc-300">
+								<Label htmlFor="email" className="text-muted-foreground">
 									Email
 								</Label>
 								<div className="relative">
-									<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
+									<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 									<Input
 										id="email"
 										type="email"
 										placeholder="Enter your email"
 										value={formData.email}
 										onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-										className="pl-10 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500"
+										className="pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-purple-500"
 										required
 									/>
 								</div>
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="password" className="text-zinc-300">
+								<Label htmlFor="password" className="text-muted-foreground">
 									Password
 								</Label>
 								<div className="relative">
-									<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
+									<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 									<Input
 										id="password"
 										type={showPassword ? "text" : "password"}
 										placeholder="Create a password"
 										value={formData.password}
 										onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-										className="pl-10 pr-10 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500"
+										className="pl-10 pr-10 bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-purple-500"
 										required
 									/>
 									<button
 										type="button"
 										onClick={() => setShowPassword(!showPassword)}
-										className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
+										className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
 									>
 										{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
 									</button>
@@ -197,9 +197,9 @@ export default function SignUpPage() {
 												{req.met ? (
 													<Check className="w-3 h-3 text-green-400" />
 												) : (
-													<X className="w-3 h-3 text-zinc-500" />
+													<X className="w-3 h-3 text-muted-foreground" />
 												)}
-												<span className={req.met ? "text-green-400" : "text-zinc-500"}>{req.text}</span>
+												<span className={req.met ? "text-green-400" : "text-muted-foreground"}>{req.text}</span>
 											</div>
 										))}
 									</div>
@@ -207,18 +207,18 @@ export default function SignUpPage() {
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="confirmPassword" className="text-zinc-300">
+								<Label htmlFor="confirmPassword" className="text-muted-foreground">
 									Confirm Password
 								</Label>
 								<div className="relative">
-									<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
+									<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 									<Input
 										id="confirmPassword"
 										type={showConfirmPassword ? "text" : "password"}
 										placeholder="Confirm your password"
 										value={formData.confirmPassword}
 										onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-										className={`pl-10 pr-10 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-purple-500 ${
+										className={`pl-10 pr-10 bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-purple-500 ${
 											formData.confirmPassword && formData.password !== formData.confirmPassword ? "border-red-500" : ""
 										}`}
 										required
@@ -226,7 +226,7 @@ export default function SignUpPage() {
 									<button
 										type="button"
 										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-										className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
+										className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
 									>
 										{showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
 									</button>
@@ -240,10 +240,10 @@ export default function SignUpPage() {
 								<input
 									id="terms"
 									type="checkbox"
-									className="w-4 h-4 mt-0.5 rounded border-zinc-700 bg-zinc-800 text-purple-500 focus:ring-purple-500 focus:ring-offset-0"
+									className="w-4 h-4 mt-0.5 rounded border-border bg-input text-purple-500 focus:ring-purple-500 focus:ring-offset-0"
 									required
 								/>
-								<Label htmlFor="terms" className="text-sm text-zinc-400 leading-relaxed">
+								<Label htmlFor="terms" className="text-sm text-muted-foreground leading-relaxed">
 									I agree to the{" "}
 									<Link href="/terms" className="text-purple-400 hover:text-purple-300">
 										Terms of Service
@@ -278,7 +278,7 @@ export default function SignUpPage() {
 					</CardContent>
 
 					<CardFooter>
-						<p className="text-center text-sm text-zinc-400 w-full">
+						<p className="text-center text-sm text-muted-foreground w-full">
 							Already have an account?{" "}
 							<Link href="/signin" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
 								Sign in
@@ -288,7 +288,7 @@ export default function SignUpPage() {
 				</Card>
 
 				{/* Security note */}
-				<div className="text-center mt-6 text-xs text-zinc-500">
+				<div className="text-center mt-6 text-xs text-muted-foreground">
 					🔒 Your data is encrypted and secure. We never share your information.
 				</div>
 			</div>

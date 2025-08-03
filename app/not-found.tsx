@@ -29,7 +29,7 @@ export default function NotFound() {
 	];
 
 	return (
-		<div className="min-h-screen bg-zinc-950 text-white overflow-hidden relative">
+		<div className="min-h-screen bg-background text-foreground overflow-hidden relative">
 			{/* Animated background */}
 			<div className="fixed inset-0 -z-10">
 				{/* Mouse follower gradient */}
@@ -47,7 +47,7 @@ export default function NotFound() {
 				<div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-r from-orange-500/5 to-red-500/5 rounded-full blur-3xl animate-float" />
 
 				{/* Grid pattern */}
-				<div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.02)_1px,transparent_0)] bg-[length:50px_50px]" />
+				<div className="absolute inset-0 bg-grid-pattern opacity-5 dark:opacity-10" />
 			</div>
 
 			{/* Floating icons */}
@@ -98,42 +98,14 @@ export default function NotFound() {
 
 					{/* Error message */}
 					<div
-						className={`mb-12 transition-all duration-1000 delay-300 ${
+						className={`mb-8 transition-all duration-1000 delay-300 ${
 							isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
 						}`}
 					>
-						<h1 className="text-3xl md:text-4xl font-bold mb-4">Oops! Page Not Found</h1>
-						<p className="text-lg text-zinc-400 mb-8 leading-relaxed">
-							Looks like this page got lost in the digital void. Don&apos;t worry, even our AI couldn&apos;t find it!
-							You can contribute to the project on GitHub to help improve the experience.
+						<h1 className="text-3xl md:text-4xl font-bold mb-4">Page Not Found</h1>
+						<p className="text-lg text-muted-foreground mb-8">
+							Oops! The page you're looking for seems to have wandered off into the digital void.
 						</p>
-
-						{/* Animated search suggestion */}
-						<Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm max-w-md mx-auto mb-4">
-							<CardContent className="p-6">
-								<div className="flex items-center gap-3 mb-3">
-									<Search className="w-5 h-5 text-purple-400 animate-pulse" />
-									<span className="text-sm text-zinc-300">Maybe you were looking for:</span>
-								</div>
-								<div className="space-y-2 text-left">
-									<Link href="/" className="block text-sm text-zinc-400 hover:text-purple-400 transition-colors">
-										→ Home page
-									</Link>
-									<Link href="/pricing" className="block text-sm text-zinc-400 hover:text-purple-400 transition-colors">
-										→ Pricing plans
-									</Link>
-									<Link href="/about" className="block text-sm text-zinc-400 hover:text-purple-400 transition-colors">
-										→ About us
-									</Link>
-									<Link
-										href="https://github.com/Er-luffy-d/Simplifai"
-										className="block text-sm text-zinc-400 hover:text-purple-400 transition-colors"
-									>
-										→ Github
-									</Link>
-								</div>
-							</CardContent>
-						</Card>
 					</div>
 
 					{/* Action buttons */}
@@ -142,58 +114,72 @@ export default function NotFound() {
 							isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
 						}`}
 					>
-						<Button
-							asChild
-							className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium px-8 group"
-						>
+						<Button asChild size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
 							<Link href="/">
-								<Home className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+								<Home className="w-4 h-4 mr-2" />
 								Go Home
 							</Link>
 						</Button>
-
-						<Button
-							variant="outline"
-							onClick={() => window.history.back()}
-							className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-600 px-8 group"
-						>
-							<ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-							Go Back
+						<Button variant="outline" size="lg" asChild>
+							<Link href="/about">
+								<Search className="w-4 h-4 mr-2" />
+								Learn More
+							</Link>
 						</Button>
 					</div>
 
-					{/* Fun fact */}
+					{/* Helpful suggestions */}
 					<div
-						className={`my-10 transition-all duration-1000 delay-700 ${
+						className={`mt-12 transition-all duration-1000 delay-700 ${
 							isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
 						}`}
 					>
-						<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/50 border border-zinc-800 text-sm text-zinc-400 ">
-							<Sparkles className="w-4 h-4 text-purple-400 animate-spin-slow" />
-							<span>Fun fact: 404 errors were named after room 404 at CERN</span>
-						</div>
+						<Card className="bg-card/50 backdrop-blur-sm border-border/50">
+							<CardContent className="p-6">
+								<h3 className="text-lg font-semibold mb-4">What you can do:</h3>
+								<div className="grid gap-4 md:grid-cols-2 text-sm">
+									<div className="flex items-start gap-3">
+										<div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+											<Home className="w-4 h-4 text-purple-500" />
+										</div>
+										<div>
+											<h4 className="font-medium mb-1">Go Home</h4>
+											<p className="text-muted-foreground">Return to the main page and explore our features</p>
+										</div>
+									</div>
+									<div className="flex items-start gap-3">
+										<div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+											<Search className="w-4 h-4 text-blue-500" />
+										</div>
+										<div>
+											<h4 className="font-medium mb-1">Search</h4>
+											<p className="text-muted-foreground">Use the navigation to find what you're looking for</p>
+										</div>
+									</div>
+									<div className="flex items-start gap-3">
+										<div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
+											<Brain className="w-4 h-4 text-green-500" />
+										</div>
+										<div>
+											<h4 className="font-medium mb-1">Upload Document</h4>
+											<p className="text-muted-foreground">Try our AI-powered document processing</p>
+										</div>
+									</div>
+									<div className="flex items-start gap-3">
+										<div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center flex-shrink-0">
+											<Zap className="w-4 h-4 text-orange-500" />
+										</div>
+										<div>
+											<h4 className="font-medium mb-1">Get Started</h4>
+											<p className="text-muted-foreground">Sign up and start learning with AI</p>
+										</div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
 					</div>
 				</div>
 			</div>
-
-			{/* Animated particles */}
-			<div className="fixed inset-0 pointer-events-none">
-				{Array.from({ length: 20 }).map((_, i) => (
-					<div
-						key={i}
-						className="absolute w-1 h-1 bg-purple-400/30 rounded-full animate-float"
-						style={{
-							left: `${Math.random() * 100}%`,
-							top: `${Math.random() * 100}%`,
-							animationDelay: `${Math.random() * 5}s`,
-							animationDuration: `${3 + Math.random() * 4}s`,
-						}}
-					/>
-				))}
-			</div>
-
-			{/* Bottom decoration */}
-			<div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
 		</div>
 	);
 }

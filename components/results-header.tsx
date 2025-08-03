@@ -255,7 +255,7 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 	};
 
 	return (
-		<div className="sticky top-0 z-10 bg-background border-b">
+		<div className="sticky top-0 z-10 bg-background border-b border-border">
 			<div className="container flex items-center justify-between h-16 px-4 mx-auto">
 				<div className="flex items-center gap-4">
 					<Button variant="ghost" size="icon" asChild data-cursor="hover" data-cursor-text="Back to Home">
@@ -274,7 +274,7 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 						<Button
 							variant="outline"
 							size="sm"
-							className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-white hover:text-blue-500 rounded-r-none border-r-0"
+							className="hidden sm:flex rounded-r-none border-r-0"
 							onClick={handleExportPDF}
 							data-cursor="hover"
 							data-cursor-text="Export as PDF"
@@ -287,7 +287,7 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 								<Button
 									variant="outline"
 									size="sm"
-									className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-white hover:text-blue-500 rounded-l-none px-2"
+									className="hidden sm:flex rounded-l-none px-2"
 									data-cursor="hover"
 									data-cursor-text="Export Options"
 								>
@@ -295,7 +295,7 @@ export function ResultsHeader({ fileName }: { fileName: string }) {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
-								<DropdownMenuItem onClick={handleExportJSON} className="cursor-pointer ring-2 ring-slate-400/40">
+								<DropdownMenuItem onClick={handleExportJSON} className="cursor-pointer">
 									<Braces className="w-4 h-4 mr-2" />
 									Export as JSON
 								</DropdownMenuItem>

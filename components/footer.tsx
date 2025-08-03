@@ -2,6 +2,7 @@ import type React from "react";
 import Link from "next/link";
 import { Github, Twitter, Linkedin, Mail, Heart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import ThemeToggle from "./ThemeToggle";
 
 const Footer: React.FC = () => {
 	const currentYear = new Date().getFullYear();
@@ -116,16 +117,22 @@ const Footer: React.FC = () => {
 					<div className="text-sm text-muted-foreground">
 						© {currentYear} SimplifAI. All rights reserved.
 					</div>
-					<div className="flex items-center space-x-6 text-sm text-muted-foreground">
-						<Link href="/privacy" className="hover:text-foreground transition-colors">
-							Privacy
-						</Link>
-						<Link href="/terms" className="hover:text-foreground transition-colors">
-							Terms
-						</Link>
-						<Link href="/cookies" className="hover:text-foreground transition-colors">
-							Cookies
-						</Link>
+					<div className="flex items-center space-x-6">
+						<div className="flex items-center space-x-6 text-sm text-muted-foreground">
+							<Link href="/privacy" className="hover:text-foreground transition-colors">
+								Privacy
+							</Link>
+							<Link href="/terms" className="hover:text-foreground transition-colors">
+								Terms
+							</Link>
+							<Link href="/cookies" className="hover:text-foreground transition-colors">
+								Cookies
+							</Link>
+						</div>
+						<div className="flex items-center space-x-2">
+							<span className="text-sm text-muted-foreground">Theme:</span>
+							<ThemeToggle />
+						</div>
 					</div>
 				</div>
 

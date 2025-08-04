@@ -1,7 +1,8 @@
 import type React from "react";
 import Link from "next/link";
-import { Github, Twitter, Linkedin, Mail, Heart } from "lucide-react";
+import { Github, Linkedin, Mail, Heart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { SiX as Twitter } from "react-icons/si";
 
 const Footer: React.FC = () => {
 	const currentYear = new Date().getFullYear();

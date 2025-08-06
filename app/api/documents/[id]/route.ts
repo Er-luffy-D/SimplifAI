@@ -4,22 +4,40 @@ import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import { gunzipSync, gzipSync } from "zlib";
 
-export async function GET(
-    req: NextRequest,
-    { params }: { params: { id: string } },
-) {
+export interface OpenAIChoice {
+    message: {
+        content: string;
+    };
+}
+
+export interface OpenAIResponse {
+    choices: OpenAIChoice[];
+}
+
+interface DocumentResponse {
+    id: string;
+    docName: string;
+    generatedContent?: object | null;
+    shared: boolean;
+    responseFormat: string | null;
+    generationStatus?: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    content?: never;
+    user?: never;
+    userId?: never;
+}
+
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<NextResponse<DocumentResponse | { error: string }>> {
     try {
         const token = await getToken({ req, secret: process.env.AUTH_SECRET });
         const { id } = await params;
 
         if (!id) {
-            return NextResponse.json(
-                { error: "Document ID is required" },
-                { status: 400 },
-            );
+            return NextResponse.json({ error: "Document ID is required" }, { status: 400 });
         }
 
-        let document = await prisma.parsedDocument.findUnique({
+        const document = await prisma.parsedDocument.findUnique({
             where: { id },
             include: {
                 user: {
@@ -30,83 +48,74 @@ export async function GET(
             },
         });
 
-        if (
-            !document ||
-            (document.shared === false && document.user?.email !== token?.email)
-        ) {
-            return NextResponse.json(
-                { error: "Document not found" },
-                { status: 404 },
-            );
+        if (!document || (document.shared === false && document.user?.email !== token?.email)) {
+            return NextResponse.json({ error: "Document not found" }, { status: 404 });
         }
 
+        const response: DocumentResponse = {
+            id: document.id,
+            docName: document.docName,
+            generatedContent: null,
+            shared: document.shared,
+            responseFormat: document.responseFormat,
+            generationStatus: document.generationStatus,
+            createdAt: document.createdAt,
+            updatedAt: document.updatedAt,
+        };
+
         if (document.generatedContent) {
-            document.generatedContent = gunzipSync(
-                Buffer.from(document.generatedContent, "base64"),
-            ).toString("utf-8");
-
             try {
-                console.log(
-                    "Generated content uncompressed successfully",
-                    document.generatedContent,
-                );
-                document.generatedContent = JSON.parse(
-                    document.generatedContent,
-                );
+                const decompressedContent = gunzipSync(Buffer.from(document.generatedContent, "base64")).toString("utf-8");
 
-                // fallback method
-                if (
-                    Object.keys(document.generatedContent).includes("choices")
-                ) {
-                    // if in OpenAI format, convert to JSON
-                    document.generatedContent = jsonrepair(
-                        document.generatedContent.choices?.[0]?.message
-                            ?.content,
-                    );
-                    document.generatedContent = JSON.parse(
-                        document.generatedContent,
-                    );
-                    // if it is valid JSON, update the database
-                    if (document.generatedContent) {
-                        document.responseFormat = "json";
-                        await prisma.parsedDocument.update({
-                            where: { id: document.id },
-                            data: {
-                                generatedContent: gzipSync(
-                                    JSON.stringify(document.generatedContent),
-                                ).toString("base64"),
-                                responseFormat: "json",
-                                generationStatus: "success",
-                            },
-                        });
+                let parsedContent: unknown;
+
+                try {
+                    parsedContent = JSON.parse(decompressedContent);
+                    response.generatedContent = parsedContent as object;
+                } catch {}
+
+                if (parsedContent && typeof parsedContent === "object" && "choices" in parsedContent) {
+                    const openAIResponse = parsedContent as OpenAIResponse;
+
+                    if (Array.isArray(openAIResponse.choices) && openAIResponse.choices[0]?.message?.content) {
+                        try {
+                            const repairedJson = jsonrepair(openAIResponse.choices[0].message.content);
+                            const finalContent = JSON.parse(repairedJson);
+
+                            await prisma.parsedDocument.update({
+                                where: { id: document.id },
+                                data: {
+                                    generatedContent: gzipSync(JSON.stringify(finalContent)).toString("base64"),
+                                    responseFormat: "json",
+                                    generationStatus: "success",
+                                },
+                            });
+
+                            response.generatedContent = finalContent;
+                            response.responseFormat = "json";
+                        } catch (jsonError) {
+                            console.error("Failed to parse OpenAI content as JSON:", jsonError);
+                        }
                     }
                 }
-            } catch (err) {
-                if (document.responseFormat === "json") {
-                    // should not happen if responseFormat is correct,
-                    // but if it does, also update the database
-                    console.error("The unspoken error occurred:", err);
-                    document.responseFormat = "text";
+            } catch {
+                if (document.generationStatus !== "error") {
                     await prisma.parsedDocument.update({
                         where: { id: document.id },
                         data: {
                             responseFormat: "text",
+                            generationStatus: "error",
                         },
                     });
+                    response.responseFormat = "text";
+                    response.generationStatus = "error";
                 }
             }
         }
 
-        document.content = undefined;
-        document.user = undefined;
-        document.userId = undefined;
-
-        return NextResponse.json(document, { status: 200 });
-    } catch (err) {
-        console.error("Error fetching document:", err);
-        return NextResponse.json(
-            { error: "Failed to fetch document" },
-            { status: 500 },
-        );
+        return NextResponse.json(response, { status: 200 });
+    } catch (error) {
+        console.error("Error fetching document:", error);
+        return NextResponse.json({ error: "Failed to fetch document" }, { status: 500 });
     }
 }

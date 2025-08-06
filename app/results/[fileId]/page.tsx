@@ -41,7 +41,7 @@ const DocumentStateLayout = ({
     </main>
 );
 
-export const DocumentIdRequired = () => (
+const DocumentIdRequired = () => (
     <DocumentStateLayout
         icon={AlertTriangle}
         title="Document ID Required"
@@ -49,7 +49,7 @@ export const DocumentIdRequired = () => (
     />
 );
 
-export const DocumentNotFound = () => (
+const DocumentNotFound = () => (
     <DocumentStateLayout
         icon={FileWarning}
         title="Document Not Found"
@@ -59,7 +59,7 @@ export const DocumentNotFound = () => (
     />
 );
 
-export const DocumentGenerationFailed = () => (
+const DocumentGenerationFailed = () => (
     <DocumentStateLayout
         icon={Ban}
         title="Document Generation Failed"
@@ -67,7 +67,7 @@ export const DocumentGenerationFailed = () => (
     />
 );
 
-export const DocumentNotSupported = () => (
+const DocumentNotSupported = () => (
     <DocumentStateLayout
         icon={FileWarning}
         title="This document doesn’t support flashcards & summaries"
@@ -77,7 +77,7 @@ export const DocumentNotSupported = () => (
     />
 );
 
-export const DocumentProcessing = () => (
+const DocumentProcessing = () => (
     <DocumentStateLayout
         icon={Loader2}
         title="Document is still being processed"

@@ -5,6 +5,7 @@ import { getToken } from "next-auth/jwt";
 import { NextRequest } from "next/server";
 import pdfParse from "pdf-parse";
 import { gzipSync } from "zlib";
+import { OpenAIResponse } from "../documents/[id]/route";
 
 export async function POST(req: NextRequest) {
     const formData = await req.formData();
@@ -41,10 +42,7 @@ export async function POST(req: NextRequest) {
         } else if (fileType === "text/plain") {
             textContent = buffer.toString("utf-8");
         } else {
-            return new Response(
-                JSON.stringify({ error: "Unsupported file type" }),
-                { status: 415 },
-            );
+            return new Response(JSON.stringify({ error: "Unsupported file type" }), { status: 415 });
         }
 
         // save the raw document content
@@ -79,10 +77,7 @@ export async function POST(req: NextRequest) {
         const pointCount = getPointCount(summaryLength);
 
         // Generate the mainPoints array for the prompt
-        const generateMainPointsStructure = (count: {
-            min: number;
-            max: number;
-        }) => {
+        const generateMainPointsStructure = (count: { min: number; max: number }) => {
             const points = [];
             for (let i = 0; i < count.max; i++) {
                 points.push('{ "keyPoint": "..." }');
@@ -92,9 +87,7 @@ export async function POST(req: NextRequest) {
 
         const prompt = `You are a strict assistant. Output only valid JSON. No markdown. No explanation. No text before or after.
 
-Return the following structure filled with meaningful, well-written content based on the input. Generate ${
-            pointCount.min
-        }-${
+Return the following structure filled with meaningful, well-written content based on the input. Generate ${pointCount.min}-${
             pointCount.max
         } main points for the summary. Each quiz question must have four options, and one must be correct. Set "correct" to 1, 2, 3, or 4 based on the position of the correct option in the array (1-based index). Flashcard difficulties must be "easy", "medium", or "hard". Questions must vary naturally in structure and tone.
 
@@ -179,8 +172,7 @@ ${textContent}`;
             messages: [
                 {
                     role: "system",
-                    content:
-                        "You are a strict JSON generator assistant. Always reply with valid JSON only.",
+                    content: "You are a strict JSON generator assistant. Always reply with valid JSON only.",
                 },
                 {
                     role: "user",
@@ -190,17 +182,13 @@ ${textContent}`;
         };
 
         try {
-            const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_AI_URL}`,
-                openRouterPayload,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "application/json",
-                        Authorization: `Bearer ${process.env.AI_API_KEY}`,
-                    },
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_AI_URL}`, openRouterPayload, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: `Bearer ${process.env.AI_API_KEY}`,
                 },
-            );
+            });
 
             const rawResponse = response.data;
             let extractedContent: string | object = rawResponse;
@@ -209,17 +197,15 @@ ${textContent}`;
 
             try {
                 if (rawResponse) {
-                    let parsed: any = rawResponse;
+                    let parsed: object | null = null;
                     if (typeof rawResponse === "string") {
                         const match = rawResponse.match(/\{[\s\S]*\}/);
-                        if (!match)
-                            throw new Error(
-                                "No JSON object found in response string.",
-                            );
+                        if (!match) throw new Error("No JSON object found in response string.");
                         parsed = JSON.parse(match[0]);
+                    } else if (typeof rawResponse === "object") {
+                        parsed = rawResponse;
                     }
-                    const openAiContent =
-                        parsed?.choices?.[0]?.message?.content ?? parsed;
+                    const openAiContent = (parsed as OpenAIResponse)?.choices?.[0]?.message?.content ?? parsed;
                     if (typeof openAiContent === "string") {
                         try {
                             const repaired = jsonrepair(openAiContent);
@@ -227,32 +213,24 @@ ${textContent}`;
                             parsed = JSON.parse(repaired);
                             validJson = true;
                         } catch (repairErr) {
-                            console.warn(
-                                "JSON repair failed, storing raw string:",
-                                repairErr,
-                            );
+                            console.warn("JSON repair failed, storing raw string:", repairErr);
                         }
                     } else {
                         parsed = openAiContent;
                         validJson = true;
                     }
-                    extractedContent = parsed;
-                    responseFormat = "json";
+                    if (parsed) {
+                        extractedContent = parsed;
+                        responseFormat = "json";
+                    }
                 }
             } catch (parseErr) {
-                console.warn(
-                    "Failed to extract clean JSON from response:",
-                    parseErr,
-                );
+                console.warn("Failed to extract clean JSON from response:", parseErr);
             }
 
             // update the document with the generated content
-            const dataToCompress =
-                typeof extractedContent === "string"
-                    ? extractedContent
-                    : JSON.stringify(extractedContent);
-            const generatedContent =
-                gzipSync(dataToCompress).toString("base64");
+            const dataToCompress = typeof extractedContent === "string" ? extractedContent : JSON.stringify(extractedContent);
+            const generatedContent = gzipSync(dataToCompress).toString("base64");
 
             await prisma.parsedDocument.update({
                 where: { id: savedDoc.id },
@@ -263,13 +241,10 @@ ${textContent}`;
                 },
             });
 
-            return new Response(
-                JSON.stringify({ id: savedDoc.id, status: "success" }),
-                {
-                    headers: { "Content-Type": "application/json" },
-                    status: 200,
-                },
-            );
+            return new Response(JSON.stringify({ id: savedDoc.id, status: "success" }), {
+                headers: { "Content-Type": "application/json" },
+                status: 200,
+            });
         } catch (apiErr) {
             console.error("OpenRouter API error:", apiErr);
 

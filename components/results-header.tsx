@@ -2,8 +2,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, FileText, Share2, Braces, MoreVertical } from "lucide-react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
 import jsPDF from "jspdf";
 import {
     DropdownMenu,
@@ -43,7 +41,6 @@ export interface ParsedDocumentResponse {
             difficulty: "easy" | "medium" | "hard";
         }[] | null;
         quiz: QuizItem[] | null;
-        [key: string]: any; // to allow for additional fields in the future
     }
     | null;
     generationStatus: "not_generated" | "processing" | "success" | "error";

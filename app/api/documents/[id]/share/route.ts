@@ -1,13 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { jsonrepair } from "jsonrepair";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { gunzipSync, gzipSync } from "zlib";
 
-export async function POST(
-    req: NextRequest,
-    { params }: { params: { id: string } },
-) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const token = await getToken({ req, secret: process.env.AUTH_SECRET });
         if (!token || !token.email) {
@@ -18,10 +13,7 @@ export async function POST(
 
         const { id } = await params;
         if (!id) {
-            return NextResponse.json(
-                { error: "Document ID is required" },
-                { status: 400 },
-            );
+            return NextResponse.json({ error: "Document ID is required" }, { status: 400 });
         }
 
         const updatedDoc = await prisma.parsedDocument.updateMany({
@@ -33,23 +25,17 @@ export async function POST(
         });
 
         if (updatedDoc.count === 0) {
-            return NextResponse.json(
-                { error: "Document not found or not owned by user" },
-                { status: 404 },
-            );
+            return NextResponse.json({ error: "Document not found or not owned by user" }, { status: 404 });
         }
         return NextResponse.json(
             {
                 message: "Document shared successfully",
                 status: "success",
             },
-            { status: 200 },
+            { status: 200 }
         );
     } catch (err) {
         console.error("Error fetching document:", err);
-        return NextResponse.json(
-            { error: "Failed to fetch document" },
-            { status: 500 },
-        );
+        return NextResponse.json({ error: "Failed to fetch document" }, { status: 500 });
     }
 }

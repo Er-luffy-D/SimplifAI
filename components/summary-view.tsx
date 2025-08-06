@@ -1,7 +1,5 @@
 "use client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { RootState } from "@/lib/store";
-import { useSelector } from "react-redux";
 
 type summary = {
     mainPoints: { keyPoint: string }[];

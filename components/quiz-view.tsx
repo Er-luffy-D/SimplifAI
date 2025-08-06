@@ -13,8 +13,6 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckCircle2, XCircle } from "lucide-react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
 
 type QuizItem = {
     question: string;
@@ -23,20 +21,21 @@ type QuizItem = {
 };
 
 export function QuizView({ quizQuestions }: { quizQuestions?: QuizItem[] | null }) {
-    if (!quizQuestions || !Array.isArray(quizQuestions)) {
-        return <p className="text-center text-muted-foreground">No quiz data available.</p>;
-    }
-
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [quizCompleted, setQuizCompleted] = useState(false);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [score, setScore] = useState(0);
     const [answers, setAnswers] = useState<(number | null)[]>(
-        Array(quizQuestions.length).fill(null)
+        Array(quizQuestions?.length || 0).fill(null)
     );
     const [isAnswered, setIsAnswered] = useState<boolean[]>(
-        Array(quizQuestions.length).fill(false)
+        Array(quizQuestions?.length || 0).fill(false)
     );
+
+    if (!quizQuestions || !Array.isArray(quizQuestions)) {
+        return <p className="text-center text-muted-foreground">No quiz data available.</p>;
+    }
+
 
     if (!quizQuestions.length) {
         return <p className="text-center text-muted-foreground">No quiz data found.</p>;

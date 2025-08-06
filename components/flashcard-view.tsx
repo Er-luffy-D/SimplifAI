@@ -10,8 +10,6 @@ import {
     Shuffle,
     Star,
 } from "lucide-react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
 import { useArrowNav } from "../hooks/useArrowNav.js";
 type FlashCards = {
     question: string;
@@ -20,23 +18,14 @@ type FlashCards = {
 }[];
 
 export function FlashcardView({ originalFlashcards }: { originalFlashcards?: FlashCards | null }) {
-    if (!originalFlashcards || originalFlashcards.length === 0) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <p className="text-muted-foreground">No flashcards available.</p>
-            </div>
-        );
-    }
-
-    const [flashcards, setFlashcards] = useState(originalFlashcards);
+    const [flashcards, setFlashcards] = useState(originalFlashcards || []);
     const [currentCard, setCurrentCard] = useState(0);
     const [flipped, setFlipped] = useState(false);
     const [favorites, setFavorites] = useState<number[]>([]);
-
     const nextCard = () => {
         setFlipped(false);
         setTimeout(() => {
-            setCurrentCard((prev) => (prev + 1) % flashcards.length);
+            setCurrentCard((prev) => (prev + 1) % (originalFlashcards?.length || 0));
         }, 200);
     };
 
@@ -49,8 +38,15 @@ export function FlashcardView({ originalFlashcards }: { originalFlashcards?: Fla
         }, 200);
     };
 
-
     useArrowNav({ onPrev: prevCard, onNext: nextCard });
+
+    if (!originalFlashcards || originalFlashcards.length === 0) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-muted-foreground">No flashcards available.</p>
+            </div>
+        );
+    }
 
     const toggleFavorite = () => {
         setFavorites((prev) =>

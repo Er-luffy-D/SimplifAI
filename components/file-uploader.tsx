@@ -2,7 +2,6 @@
 
 import type React from "react";
 import { useState } from "react";
-import { jsonrepair } from "jsonrepair";
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -10,13 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { FileText, Upload, CheckCircle2, Sparkles } from "lucide-react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { Add_data } from "@/lib/store/slices/parseSlice";
 import { useSession } from "next-auth/react";
 import { Toast } from "./toasts";
 
 export function FileUploader() {
-    const dispatch = useDispatch();
     const [file, setFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);

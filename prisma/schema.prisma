@@ -23,7 +23,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-
+  documents     Document[] // ← Add this relation
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -71,11 +72,13 @@ model Document {
   id        String   @id @default(cuid())
   filename  String
   content   String   @db.Text
-  userId    String?
+  userId    String?  // Keep optional for backward compatibility
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  // Add the user relation
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@index([userId])
   @@index([createdAt])
 }
-

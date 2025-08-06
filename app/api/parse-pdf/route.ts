@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { ChromaService } from '@/lib/rag/chroma-service';
 import { TextChunker } from '@/lib/rag/text-chunker';
 import { prisma } from '@/lib/prisma';
+import { getToken } from 'next-auth/jwt';
 import axios from 'axios';
+import { gzipSync } from 'zlib';
 
 async function extractTextFromFile(file: File): Promise<string> {
   const fileType = file.type;
@@ -29,12 +31,23 @@ async function extractTextFromFile(file: File): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
+  // 1. Authentication (matching existing system)
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  if (!token) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+  }
+
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
+    const fileType = formData.get('type') as string | null;
     
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+      return new Response(JSON.stringify({ error: 'No file uploaded' }), { status: 400 });
+    }
+
+    if (!fileType) {
+      return new Response(JSON.stringify({ error: 'Type is not provided' }), { status: 400 });
     }
 
     console.log(`🔄 Processing file: ${file.name}, type: ${file.type}`);
@@ -43,147 +56,121 @@ export async function POST(req: NextRequest) {
     const textContent = await extractTextFromFile(file);
     
     if (!textContent || textContent.length < 100) {
-      return NextResponse.json({ 
+      return new Response(JSON.stringify({ 
         error: 'File contains insufficient text content (minimum 100 characters)' 
-      }, { status: 400 });
+      }), { status: 400 });
     }
 
     console.log(`✅ Extracted ${textContent.length} characters from file`);
 
-    // Step 2: Create document record in database
-    const document = await prisma.document.create({
-      data: {
-        filename: file.name,
-        content: textContent,
-        // userId: userId, // Add if you have user authentication
-      }
-    });
-
-    console.log(`✅ Created document record with ID: ${document.id}`);
-
-    // Step 3: Initialize ChromaDB and text chunker
-    const chromaService = new ChromaService();
-    const textChunker = new TextChunker(800, 100); // 800 chars per chunk, 100 overlap
-    
-    // Step 4: Chunk the document text
-    const chunks = textChunker.chunkText(textContent);
-    console.log(`✅ Generated ${chunks.length} text chunks`);
-    
-    if (chunks.length === 0) {
-      return NextResponse.json({ 
-        error: 'Failed to generate valid chunks from document' 
-      }, { status: 400 });
-    }
-
-    // Step 5: Store chunks in ChromaDB for RAG
+    // Step 2: RAG Processing (NEW)
     let chromaSuccess = false;
     try {
-      console.log(`🔄 Storing chunks in ChromaDB for fileId: ${document.id}`);
-      await chromaService.addDocumentChunks(document.id, chunks);
-      console.log(`✅ Successfully stored ${chunks.length} chunks in ChromaDB`);
-      chromaSuccess = true;
+      const chromaService = new ChromaService();
+      const textChunker = new TextChunker(800, 100);
+      const chunks = textChunker.chunkText(textContent);
+      
+      if (chunks.length > 0) {
+        // Use file name as document ID for now
+        const documentId = `doc_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        await chromaService.addDocumentChunks(documentId, chunks);
+        console.log(`✅ RAG: Stored ${chunks.length} chunks in ChromaDB`);
+        chromaSuccess = true;
+      }
     } catch (chromaError) {
       console.error('❌ ChromaDB storage error:', chromaError);
-      // Don't fail the entire process if ChromaDB fails
-      console.log('⚠️ Continuing without ChromaDB storage - RAG features will be limited');
+      // Continue without RAG
     }
 
-    // Step 6: Generate AI content (summary, flashcards, quiz)
-    let aiProcessingSuccess = false;
-    let parseMessage = {
-      summary: "Processing completed - summary generation failed",
-      flashcards: [],
-      quiz: []
+    // Step 3: Generate AI content (matching existing format)
+    const prompt = `You are a strict assistant. Output only valid JSON. No markdown. No explanation.
+
+{
+  "summary": {
+    "mainPoints": [
+      { "keyPoint": "..." },
+      { "keyPoint": "..." },
+      { "keyPoint": "..." }
+    ],
+    "keyInsights": "...",
+    "recommendations": [
+      { "statement": "..." },
+      { "statement": "..." }
+    ]
+  },
+  "flashcards": [
+    { "question": "...", "answer": "...", "difficulty": "easy" }
+  ],
+  "quiz": [
+    {
+      "question": "...",
+      "options": ["...", "...", "...", "..."],
+      "correct": 1
+    }
+  ]
+}
+
+INPUT TEXT:
+${textContent}`;
+
+    const openRouterPayload = {
+      model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
+      response_format: "json",
+      messages: [
+        {
+          role: "system",
+          content: "You are a strict JSON generator assistant. Always reply with valid JSON only.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
     };
 
-    try {
-      const prompt = `Generate a comprehensive JSON response with:
-      {
-        "summary": "A detailed summary of the key points, main topics, and important insights from the document",
-        "flashcards": [
-          {"front": "Key concept or question", "back": "Answer or explanation"},
-          {"front": "Important term", "back": "Definition and context"}
-        ],
-        "quiz": [
-          {
-            "question": "Multiple choice question about the content",
-            "options": ["Option A", "Option B", "Option C", "Option D"],
-            "correct": 0,
-            "explanation": "Why this answer is correct"
+    console.log(`🔄 Generating AI content...`);
+    
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_AI_URL}`, openRouterPayload, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${process.env.AI_API_KEY}`,
+      },
+    });
+
+    // Step 4: Save to database (matching existing model)
+    const dataToSave = gzipSync(textContent).toString("base64");
+    await prisma.document.create({
+      data: {
+        filename: file.name,
+        content: dataToSave,
+        userId: token.sub || undefined,
+      },
+    });
+
+    // Step 5: Return response in expected format
+    const result = {
+      choices: [
+        {
+          message: {
+            content: response.data.choices[0].message.content
           }
-        ]
-      }
-      
-      Create at least 5 flashcards and 3 quiz questions based on the content.
-      
-      INPUT TEXT: ${textContent.substring(0, 8000)}`;
+        }
+      ],
+      // Add RAG metadata
+      rag_enabled: chromaSuccess,
+      chroma_status: chromaSuccess ? 'connected' : 'failed'
+    };
 
-      const openRouterPayload = {
-        model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
-        response_format: { type: "json_object" },
-        messages: [
-          { 
-            role: "system", 
-            content: "You are a helpful educational assistant that creates comprehensive summaries, flashcards, and quizzes. Always respond with valid JSON." 
-          },
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 2000
-      };
-
-      console.log(`🔄 Generating AI content for document...`);
-      
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_AI_URL}`, openRouterPayload, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.AI_API_KEY}`
-        },
-        timeout: 30000 // 30 second timeout
-      });
-
-      parseMessage = JSON.parse(response.data.choices[0].message.content);
-      aiProcessingSuccess = true;
-      console.log(`✅ AI content generation completed`);
-      
-    } catch (aiError) {
-      console.error('❌ AI processing error:', aiError);
-      // Continue with basic response even if AI processing fails
-    }
-
-    // Step 7: Return comprehensive response
-    return NextResponse.json({
-      success: true,
-      fileId: document.id,
-      filename: file.name,
-      
-      // Document processing info
-      textLength: textContent.length,
-      chunksCount: chunks.length,
-      
-      // RAG status
-      ragEnabled: chromaSuccess,
-      chromaDbStatus: chromaSuccess ? 'connected' : 'failed',
-      
-      // AI content
-      summary: parseMessage.summary,
-      flashcards: parseMessage.flashcards || [],
-      quiz: parseMessage.quiz || [],
-      
-      // Processing status
-      aiProcessingSuccess,
-      
-      // Debug info (remove in production)
-      processingTime: new Date().toISOString(),
-      chunkSizes: chunks.map(chunk => chunk.length)
+    return new Response(JSON.stringify({ result }), {
+      headers: { "Content-Type": "application/json" },
+      status: 200,
     });
 
   } catch (error) {
     console.error('❌ Document processing error:', error);
-    return NextResponse.json({ 
-      error: 'Failed to process document',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString()
-    }, { status: 500 });
+    return new Response(JSON.stringify({ 
+      error: 'Failed to process document'
+    }), { status: 500 });
   }
 }

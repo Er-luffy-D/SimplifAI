@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
 	webpack: (config: any) => {
 		config.resolve.alias = {
 			...config.resolve.alias,
-			"@": path.resolve(__dirname, "src"),
+			"@": path.resolve(__dirname, "."), // Changed from "src" to "."
 		};
 		config.externals.push({
 			chromadb: "chromadb",

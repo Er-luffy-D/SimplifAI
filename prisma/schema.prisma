@@ -15,15 +15,15 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String      @unique
   password      String?
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  documents     Document[] // ← Add this relation
+  documents     Document[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -72,11 +72,10 @@ model Document {
   id        String   @id @default(cuid())
   filename  String
   content   String   @db.Text
-  userId    String?  // Keep optional for backward compatibility
+  userId    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  // Add the user relation
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@index([userId])

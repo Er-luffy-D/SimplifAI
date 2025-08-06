@@ -31,7 +31,7 @@ async function extractTextFromFile(file: File): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
-  // 1. Authentication (matching existing system)
+  // Authentication
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   if (!token) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     console.log(`🔄 Processing file: ${file.name}, type: ${file.type}`);
 
-    // Step 1: Extract text from file
+    // Extract text from file
     const textContent = await extractTextFromFile(file);
     
     if (!textContent || textContent.length < 100) {
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 
     console.log(`✅ Extracted ${textContent.length} characters from file`);
 
-    // Step 2: RAG Processing (NEW)
+    // RAG Processing
     let chromaSuccess = false;
     try {
       const chromaService = new ChromaService();
@@ -71,7 +71,6 @@ export async function POST(req: NextRequest) {
       const chunks = textChunker.chunkText(textContent);
       
       if (chunks.length > 0) {
-        // Use file name as document ID for now
         const documentId = `doc_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
         await chromaService.addDocumentChunks(documentId, chunks);
         console.log(`✅ RAG: Stored ${chunks.length} chunks in ChromaDB`);
@@ -79,10 +78,9 @@ export async function POST(req: NextRequest) {
       }
     } catch (chromaError) {
       console.error('❌ ChromaDB storage error:', chromaError);
-      // Continue without RAG
     }
 
-    // Step 3: Generate AI content (matching existing format)
+    // Generate AI content
     const prompt = `You are a strict assistant. Output only valid JSON. No markdown. No explanation.
 
 {
@@ -138,7 +136,7 @@ ${textContent}`;
       },
     });
 
-    // Step 4: Save to database (matching existing model)
+    // Save to database
     const dataToSave = gzipSync(textContent).toString("base64");
     await prisma.document.create({
       data: {
@@ -148,7 +146,7 @@ ${textContent}`;
       },
     });
 
-    // Step 5: Return response in expected format
+    // Return response
     const result = {
       choices: [
         {
@@ -157,7 +155,6 @@ ${textContent}`;
           }
         }
       ],
-      // Add RAG metadata
       rag_enabled: chromaSuccess,
       chroma_status: chromaSuccess ? 'connected' : 'failed'
     };

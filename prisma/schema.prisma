@@ -11,7 +11,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -69,10 +69,28 @@ model VerificationToken {
 }
 
 model ParsedDocument {
-  id        String   @id @default(cuid())
-  docName   String
-  content   String
-  createdAt DateTime @default(now())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String           @id @default(cuid())
+  docName          String
+  content          String
+  generatedContent String?
+  generationStatus GenerationStatus @default(not_generated)
+  responseFormat   ResponseFormat   @default(none)
+  shared           Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum GenerationStatus {
+  not_generated //for legacy records (no generated content)
+  processing
+  success
+  error
+}
+
+enum ResponseFormat {
+  none // For legacy or empty content
+  text
+  json
 }

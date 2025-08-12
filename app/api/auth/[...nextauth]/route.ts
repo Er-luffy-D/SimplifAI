@@ -4,7 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcrypt";
-const authOptions: NextAuthOptions = {
+
+export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(prisma),
 	session: {
 		strategy: "jwt" as const,
@@ -22,14 +23,11 @@ const authOptions: NextAuthOptions = {
 					where: { email: credentials.email },
 				});
 				if (!user) return null;
-
 				const isValid = await compare(credentials.password, user.password || "");
 				if (!isValid) return null;
-
 				return { id: user.id, name: user.name, email: user.email };
 			},
 		}),
-
 		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID!,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -38,19 +36,15 @@ const authOptions: NextAuthOptions = {
 	],
 	callbacks: {
 		async jwt({ token, user }) {
-			if (user) {
-				token.id = user.id;
-			}
+			if (user) token.id = user.id;
 			return token;
 		},
 		async signIn({ user, account }) {
 			if (account?.provider === "google") {
-				if (!user.email) return false; // 👈 check added here
-
+				if (!user.email) return false;
 				const existingUser = await prisma.user.findUnique({
 					where: { email: user.email },
 				});
-
 				if (!existingUser) {
 					await prisma.user.create({
 						data: {
@@ -65,7 +59,7 @@ const authOptions: NextAuthOptions = {
 		},
 	},
 	pages: {
-		signIn: "/signin", // Optional: custom sign in page
+		signIn: "/signin",
 		error: "/signin",
 	},
 };

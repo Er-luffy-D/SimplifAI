@@ -1,7 +1,7 @@
 "use client";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
-import { LogOut, User, LogIn } from "lucide-react";
+import { LogOut, User, LogIn, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function UserLabel() {
@@ -20,6 +20,17 @@ export function UserLabel() {
 	}, [open]);
 
 	// Nice gradient for name
+	const handleDeleteProfile = async () => {
+		if (!confirm("Are you sure you want to delete your profile? This cannot be undone.")) return;
+		try {
+			const res = await fetch("/api/delete-profile", { method: "DELETE" });
+			if (!res.ok) throw new Error("Failed to delete profile");
+			await signOut({ callbackUrl: "/" });
+		} catch {
+			alert("Something went wrong while deleting your profile.");
+		}
+	};
+
 	return (
 		<div className="fixed top-6 right-5 z-50 flex items-center" ref={menuRef}>
 			{status === "loading" ? (
@@ -43,7 +54,7 @@ export function UserLabel() {
 						</span>
 					</button>
 					{open && (
-						<div className="absolute right-0 mt-2 min-w-[160px] rounded-xl border border-purple-500/30 bg-black/95 shadow-xl shadow-purple-900/20 py-2 animate-fade-in-up">
+						<div className="absolute right-0 mt-2 min-w-[180px] rounded-xl border border-purple-500/30 bg-black/95 shadow-xl shadow-purple-900/20 py-2 animate-fade-in-up">
 							<Button
 								variant="ghost"
 								className="w-full flex justify-start gap-2 px-4 py-2 rounded-none font-medium text-left hover:bg-purple-500/10"
@@ -56,6 +67,16 @@ export function UserLabel() {
 							>
 								<LogOut className="w-4 h-4 text-pink-400" />
 								Logout
+							</Button>
+							<Button
+								variant="ghost"
+								className="w-full flex justify-start gap-2 px-4 py-2 rounded-none font-medium text-left hover:bg-red-500/10 text-red-400"
+								onClick={handleDeleteProfile}
+								data-cursor="hover"
+								data-cursor-text="Delete"
+							>
+								<Trash className="w-4 h-4" />
+								Delete Profile
 							</Button>
 						</div>
 					)}

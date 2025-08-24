@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +9,7 @@ import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Brain, Chrome, EyeIcon, 
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { Toast } from "@/components/toasts";
+import { Logo } from "@/components/logo";
 
 export default function SignInPage() {
 	const [showPassword, setShowPassword] = useState(false);
@@ -71,11 +70,9 @@ export default function SignInPage() {
 			<div className="w-full max-w-md relative z-10">
 				{/* Header */}
 				<div className="text-center mb-8">
-					<Link href="/" className="inline-block mb-6">
-						<span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-							Simplifai
-						</span>
-					</Link>
+					<div className="inline-block mb-6">
+						<Logo size="lg" />
+					</div>
 					<h1 className="text-3xl font-bold mb-2">Welcome back</h1>
 					<p className="text-zinc-400">Sign in to your account to continue learning</p>
 				</div>

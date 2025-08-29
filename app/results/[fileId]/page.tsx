@@ -3,6 +3,7 @@ import { ParsedDocumentResponse, ResultsHeader } from "@/components/results-head
 import { FlashcardView } from "@/components/flashcard-view";
 import { SummaryView } from "@/components/summary-view";
 import { QuizView } from "@/components/quiz-view";
+import { ChatView } from "@/components/chat-view";
 import { cookies } from "next/headers";
 
 interface ResultsPageProps {
@@ -86,7 +87,7 @@ const DocumentProcessing = () => (
 );
 
 export default async function ResultsPage({ params }: ResultsPageProps) {
-    const { fileId } = await params;
+	const { fileId } = await params; // await the async params
     const id = decodeURIComponent(fileId);
     if (!id) return <DocumentIdRequired />;
 

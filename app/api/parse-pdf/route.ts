@@ -1,11 +1,41 @@
-import { prisma } from "@/lib/prisma";
-import axios from "axios";
 import { jsonrepair } from "jsonrepair";
-import { getToken } from "next-auth/jwt";
 import { NextRequest } from "next/server";
 import pdfParse from "pdf-parse";
-import { gzipSync } from "zlib";
 import { OpenAIResponse } from "../documents/[id]/route";
+
+import { NextRequest } from 'next/server';
+import { ChromaService } from '@/lib/rag/chroma-service';
+import { TextChunker } from '@/lib/rag/text-chunker';
+import { prisma } from '@/lib/prisma';
+import { getToken } from 'next-auth/jwt';
+import axios from 'axios';
+import { gzipSync } from 'zlib';
+
+async function extractTextFromFile(file: File): Promise<string> {
+  const fileType = file.type;
+  
+  try {
+    switch (fileType) {
+      case 'text/plain':
+        return await file.text();
+        
+      case 'application/pdf':
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const { default: pdfParse } = await import('pdf-parse');
+        const pdfData = await pdfParse(buffer);
+        return pdfData.text;
+        
+      default:
+        throw new Error(`Unsupported file type: ${fileType}`);
+    }
+  } catch (error) {
+    console.error('Error extracting text:', error);
+    throw new Error(`Failed to extract text from ${fileType} file`);
+  }
+}
+
+
 
 export async function POST(req: NextRequest) {
     const formData = await req.formData();
@@ -30,6 +60,34 @@ export async function POST(req: NextRequest) {
             status: 400,
         });
     }
+    
+     const textContent = await extractTextFromFile(file);
+    
+    if (!textContent || textContent.length < 100) {
+      return new Response(JSON.stringify({ 
+        error: 'File contains insufficient text content (minimum 100 characters)' 
+      }), { status: 400 });
+    }
+
+    console.log(`✅ Extracted ${textContent.length} characters from file`);
+    try{
+    // RAG Processing
+    let chromaSuccess = false;
+    try {
+      const chromaService = new ChromaService();
+      const textChunker = new TextChunker(800, 100);
+      const chunks = textChunker.chunkText(textContent);
+      
+      if (chunks.length > 0) {
+        const documentId = `doc_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        await chromaService.addDocumentChunks(documentId, chunks);
+        console.log(`✅ RAG: Stored ${chunks.length} chunks in ChromaDB`);
+        chromaSuccess = true;
+      }
+    } catch (chromaError) {
+      console.error('❌ ChromaDB storage error:', chromaError);
+    }}catch(){
+    console.log("Ignoring Rag because any error occured")}
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -94,78 +152,30 @@ Return the following structure filled with meaningful, well-written content base
 {
   "summary": {
     "mainPoints": [
-      ${generateMainPointsStructure(pointCount)}
+      { "keyPoint": "..." },
+      { "keyPoint": "..." },
+      { "keyPoint": "..." }
     ],
     "keyInsights": "...",
     "recommendations": [
-      { "statement": "..." },
       { "statement": "..." },
       { "statement": "..." }
     ]
   },
   "flashcards": [
-    { "question": "...", "answer": "...", "difficulty": "easy" },
-    { "question": "...", "answer": "...", "difficulty": "medium" },
-    { "question": "...", "answer": "...", "difficulty": "hard" },
-    { "question": "...", "answer": "...", "difficulty": "medium" }
+    { "question": "...", "answer": "...", "difficulty": "easy" }
   ],
   "quiz": [
     {
       "question": "...",
       "options": ["...", "...", "...", "..."],
       "correct": 1
-    },
-    {
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "correct": 3
-    },
-    {
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "correct": 2
-    },
-    {
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "correct": 4
-    },
-    {
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "correct": 2
-    },
-    {
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "correct": 1
-    },
-    {
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "correct": 3
-    },
-    {
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "correct": 1
-    },
-    {
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "correct": 4
-    },
-    {
-      "question": "...",
-      "options": ["...", "...", "...", "..."],
-      "correct": 2
     }
   ]
 }
 
 INPUT TEXT:
 ${textContent}`;
-
         const openRouterPayload = {
             model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
             response_format: "json",
@@ -180,6 +190,7 @@ ${textContent}`;
                 },
             ],
         };
+          console.log(`🔄 Generating AI content...`);
 
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_AI_URL}`, openRouterPayload, {
@@ -189,6 +200,16 @@ ${textContent}`;
                     Authorization: `Bearer ${process.env.AI_API_KEY}`,
                 },
             });
+          
+           // Save to database
+      const dataToSave = gzipSync(textContent).toString("base64");
+      await prisma.ParsedDocument.create({
+        data: {
+          filename: file.name,
+          content: dataToSave,
+          userId: token.sub || undefined,
+        },
+      });
 
             const rawResponse = response.data;
             let extractedContent: string | object = rawResponse;
@@ -241,7 +262,8 @@ ${textContent}`;
                 },
             });
 
-            return new Response(JSON.stringify({ id: savedDoc.id, status: "success" }), {
+            return new Response(JSON.stringify({ id: savedDoc.id, status: "success" ,  rag_enabled: chromaSuccess,
+      chroma_status: chromaSuccess ? 'connected' : 'failed'}), {
                 headers: { "Content-Type": "application/json" },
                 status: 200,
             });

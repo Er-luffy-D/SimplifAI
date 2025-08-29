@@ -9,6 +9,26 @@ Transform your documents into flashcards, summaries, and quizzes with cutting-ed
 
 ---
 
+<details>
+  <summary><strong>📑 Table of Contents</strong></summary>
+
+  - [✨ What is Simplifai?](#-what-is-simplifai)
+  - [🌟 Features](#-features)
+  - [🖼️ Screenshots](#️-screenshots)
+  - [🚀 Getting Started](#-getting-started)
+  - [🤖 How It Works](#-how-it-works)
+  - [💡 Why Simplifai?](#-why-simplifai)
+  - [🛠️ Roadmap](#️-roadmap)
+  - [🤝 Contributing](#-contributing)
+  - [🧑‍💻 Author](#-author)
+  - [🐳 Run Locally with Docker](#-run-locally-with-docker)
+  - [📄 License](#-license)
+  - [⭐️ Star this repo if you like it!](#️-star-this-repo-if-you-like-it)
+
+</details>
+
+---
+
 ## ✨ What is Simplifai?
 
 Simplifai is an open-source, AI-powered platform that revolutionizes learning by turning your documents (PDF, TXT) into concise summaries, interactive flashcards, and quizzes—instantly.
@@ -37,8 +57,10 @@ Whether you’re a student, teacher, or lifelong learner, Simplifai makes learni
 <br><br>
 ![image](https://github.com/user-attachments/assets/06b08719-a6c8-4cd1-9b93-755fe6de6d11)
 <br><br>
-<p>Demo video </p>
-https://github.com/user-attachments/assets/8db3f7ca-6e1d-4e01-bc5c-d844c77baaa6
+
+<p>Want to see how SimplifAI works in real time?</p>
+
+👉 [Click here to watch the demo video](https://github.com/user-attachments/assets/8db3f7ca-6e1d-4e01-bc5c-d844c77baaa6)
 
 ---
 
@@ -139,12 +161,85 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) (or open an issue to discuss your 
 
 ---
 
+
+## 🐳 Run Locally with Docker
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Gargibajpai/SimplifAI.git
+cd SimplifAI
+
+## Set Up Environment Variables 
+cp .env.example .env.local
+Then edit the .env.local file and provide the required values:
+
+AI_API_KEY
+
+NEXT_PUBLIC_AI_URL
+
+NEXT_PUBLIC_BACKEND_URL
+
+AUTH_SECRET
+
+GOOGLE_CLIENT_ID
+
+GOOGLE_CLIENT_SECRET
+
+DATABASE_URL
+
+DIRECT_URL
+
+NEXT_PUBLIC_SUPABASE_URL
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+These keys are essential for running the application locally.
+
+## Make Sure Docker Is Installed 
+Install Docker Desktop if it’s not already installed:
+
+Windows/macOS: https://www.docker.com/products/docker-desktop
+
+Ubuntu/Linux: Follow official instructions on https://docs.docker.com/get-docker/
+
+Check Docker and Docker Compose versions:
+
+docker --version
+docker compose version
+
+## Run the App with Docker Compose
+ docker compose up --build
+
+This will:
+
+Build the image
+
+Start the app on http://localhost:3000
+## Stop the App
+
+docker compose down
+```
+
 ## 📄 License
 
 MIT License. See [LICENSE](LICENSE).
 
 ---
 
+## Star History
+
+
+<a href="https://www.star-history.com/#er-luffy-d/simplifai&Timeline">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=er-luffy-d/simplifai&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=er-luffy-d/simplifai&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=er-luffy-d/simplifai&type=Timeline" />
+ </picture>
+</a>
+
 ## ⭐️ Star this repo if you like it!
 
 _Accelerate your learning. Empower your future. — Simplifai Team_
+
+---

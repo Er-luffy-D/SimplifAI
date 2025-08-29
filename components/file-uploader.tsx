@@ -2,7 +2,6 @@
 
 import type React from "react";
 import { useState } from "react";
-import { jsonrepair } from "jsonrepair";
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -10,13 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { FileText, Upload, CheckCircle2, Sparkles } from "lucide-react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { Add_data } from "@/lib/store/slices/parseSlice";
 import { useSession } from "next-auth/react";
 import { Toast } from "./toasts";
 
 export function FileUploader() {
-	const dispatch = useDispatch();
 	const [file, setFile] = useState<File | null>(null);
 	const [uploading, setUploading] = useState(false);
 	const [progress, setProgress] = useState(0);
@@ -94,45 +90,25 @@ export function FileUploader() {
 
 		try {
 			const res = await axios.post(`/api/parse-pdf`, formData);
-			const data = res.data;
-
-			const rawMessage = data.result.choices?.[0]?.message?.content ?? "";
-
-			let parseMessage;
-			try {
-				const jsonMatch = rawMessage.match(/\{[\s\S]*\}/);
-				if (!jsonMatch) throw new Error("No valid JSON found");
-
-				const repaired = jsonrepair(jsonMatch[0]);
-				parseMessage = JSON.parse(repaired);
-			} catch (err) {
-				console.error("❌ Failed to parse or repair JSON:", err, "\nRaw message:\n", rawMessage);
-				setError("⚠️ The AI response was broken. Please try again with a different file or retry.");
+			if (res.status !== 200) {
+				setError("Failed to upload file. Please try again.");
 				clearInterval(progressInterval);
 				setUploading(false);
 				return;
 			}
-
-			dispatch(
-				Add_data({
-					summary: parseMessage.summary,
-					flashcards: parseMessage.flashcards,
-					quiz: parseMessage.quiz,
-				})
-			);
-
 			setProgress(100);
 			clearInterval(progressInterval);
-
 			setTimeout(() => {
-				setUploading(false);
-				router.push(`/results/${encodeURIComponent(file.name)}`);
+				router.push(`/results/${res.data.id}`);
 			}, 800);
 		} catch (e) {
 			console.error("❌ Upload failed:", e);
 			clearInterval(progressInterval);
+			setError("Oops! Something went wrong while processing your file. Please try again.");
+			// ✅ Fix: Reset states only on error
 			setUploading(false);
-			setError("Oops! The upload failed. The file may contain too many images or the server failed. Please try again.");
+			setProgress(0);
+			setFile(null);
 		}
 	};
 
@@ -150,7 +126,9 @@ export function FileUploader() {
 							variant={summaryLength === "short" ? "default" : "outline"}
 							size="sm"
 							onClick={() => setSummaryLength("short")}
-							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "short" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							className={`flex-1 min-w-[120px] py-1 ${
+								summaryLength === "short" ? "bg-violet-500 hover:bg-violet-700" : ""
+							}`}
 							data-cursor="hover"
 							data-cursor-text="Short Summary"
 						>
@@ -164,7 +142,9 @@ export function FileUploader() {
 								setSummaryLength("medium");
 								handleInfo("It will take too long to process. Use less size files 1-2 MB for medium summaries.");
 							}}
-							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "medium" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							className={`flex-1 min-w-[120px] py-1 ${
+								summaryLength === "medium" ? "bg-violet-500 hover:bg-violet-700" : ""
+							}`}
 							data-cursor="hover"
 							data-cursor-text="Medium Summary"
 						>
@@ -178,7 +158,9 @@ export function FileUploader() {
 								setSummaryLength("long");
 								handleInfo("It will take too long to process. Use less size files 1-2 MB for long summaries.");
 							}}
-							className={`flex-1 min-w-[120px] py-1 ${summaryLength === "long" ? "bg-violet-500 hover:bg-violet-700" : ""}`}
+							className={`flex-1 min-w-[120px] py-1 ${
+								summaryLength === "long" ? "bg-violet-500 hover:bg-violet-700" : ""
+							}`}
 							data-cursor="hover"
 							data-cursor-text="Long Summary"
 						>
@@ -190,12 +172,13 @@ export function FileUploader() {
 				{/* File Dropzone */}
 				<div
 					className={`relative flex flex-col items-center justify-center text-center p-6 sm:p-8 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300
-    ${dragActive
-							? "border-primary bg-primary/10 scale-105"
-							: file
-								? "border-green-500 bg-green-50 dark:bg-green-950/20"
-								: "border-muted-foreground/25 bg-muted/30 hover:bg-muted/50 hover:border-primary/50 hover:scale-[1.02]"
-						}`}
+    ${
+			dragActive
+				? "border-primary bg-primary/10 scale-105"
+				: file
+				? "border-green-500 bg-green-50 dark:bg-green-950/20"
+				: "border-muted-foreground/25 bg-muted/30 hover:bg-muted/50 hover:border-primary/50 hover:scale-[1.02]"
+		}`}
 					onDragEnter={handleDrag}
 					onDragLeave={handleDrag}
 					onDragOver={handleDrag}
@@ -204,12 +187,16 @@ export function FileUploader() {
 					data-cursor-text="Upload PDF"
 				>
 					{file ? (
-						<div className="flex flex-col items-center gap-3 text-center animate-fade-in w-full break-words px-2"> {/* ✅ ADDED padding & wrapping */}
+						<div className="flex flex-col items-center gap-3 text-center animate-fade-in w-full break-words px-2">
+							{" "}
+							{/* ✅ ADDED padding & wrapping */}
 							<div className="relative">
 								<FileText className="w-12 h-12 text-green-500 animate-bounce-gentle" />
 								<CheckCircle2 className="w-5 h-5 text-green-500 absolute -top-1 -right-1 animate-scale-in" />
 							</div>
-							<div className="max-w-full"> {/* ✅ NEW: Wrap file name */}
+							<div className="max-w-full">
+								{" "}
+								{/* ✅ NEW: Wrap file name */}
 								<p className="font-medium text-green-700 dark:text-green-400 text-sm truncate">{file.name}</p>
 								<p className="text-sm text-green-600 dark:text-green-500">
 									{(file.size / 1024 / 1024).toFixed(2)} MB • Ready to process
@@ -220,7 +207,9 @@ export function FileUploader() {
 						<div className="flex flex-col items-center gap-3 text-center px-2">
 							<div className="relative">
 								<Upload
-									className={`w-12 h-12 text-muted-foreground transition-all duration-300 ${dragActive ? "scale-110 text-primary" : ""}`}
+									className={`w-12 h-12 text-muted-foreground transition-all duration-300 ${
+										dragActive ? "scale-110 text-primary" : ""
+									}`}
 								/>
 								{dragActive && <Sparkles className="w-4 h-4 text-primary absolute -top-1 -right-1 animate-spin" />}
 							</div>

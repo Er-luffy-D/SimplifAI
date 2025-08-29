@@ -1,29 +1,24 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id            String      @id @default(cuid())
+  id            String           @id @default(cuid())
   name          String?
-  email         String      @unique
+  email         String           @unique
   password      String?
   emailVerified DateTime?
   image         String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
   accounts      Account[]
+  parsedDocs    ParsedDocument[]
   sessions      Session[]
-  documents     Document[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -41,11 +36,9 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
 }
@@ -54,10 +47,9 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -68,16 +60,29 @@ model VerificationToken {
   @@id([identifier, token])
 }
 
-model Document {
-  id        String   @id @default(cuid())
-  filename  String
-  content   String   @db.Text
-  userId    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@index([userId])
-  @@index([createdAt])
+model ParsedDocument {
+  id               String           @id @default(cuid())
+  docName          String
+  content          String
+  generatedContent String?
+  generationStatus GenerationStatus @default(not_generated)
+  responseFormat   ResponseFormat   @default(none)
+  shared           Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum GenerationStatus {
+  not_generated
+  processing
+  success
+  error
+}
+
+enum ResponseFormat {
+  none
+  text
+  json
 }

@@ -2,7 +2,7 @@
 import { BookOpen, FileText, FileType2, ListChecks, MessageSquare, TrendingUp } from "lucide-react";
 import React from "react";
 import { MovingBorder } from "@/components/ui/moving-border";
-
+import Link from "next/link";
 export function Features() {
 	const features = [
 		{
@@ -12,6 +12,8 @@ export function Features() {
 			bgGradient: "bg-blue-500/10",
 			textColor: "text-blue-500",
 			borderColor: "bg-[radial-gradient(#3b82f6_40%,transparent_60%)]",
+			link:"./flashcards",
+			linkText: "Try Flashcards",
 		},
 		{
 			icon: <FileText />,
@@ -20,6 +22,7 @@ export function Features() {
 			bgGradient: "bg-green-500/10",
 			textColor: "text-green-500",
 			borderColor: "bg-[radial-gradient(#22c55e_40%,transparent_60%)]",
+			
 		},
 		{
 			icon: <ListChecks />,
@@ -28,6 +31,7 @@ export function Features() {
 			bgGradient: "bg-purple-500/10",
 			textColor: "text-purple-500",
 			borderColor: "bg-[radial-gradient(#a855f7_40%,transparent_60%)]",
+			
 		},
 		{
 			icon: <MessageSquare />,
@@ -36,6 +40,7 @@ export function Features() {
 			bgGradient: "bg-orange-500/10",
 			textColor: "text-orange-500",
 			borderColor: "bg-[radial-gradient(#f97316_40%,transparent_60%)]",
+			
 		},
 		{
 			icon: <FileType2 />,
@@ -44,6 +49,7 @@ export function Features() {
 			bgGradient: "bg-indigo-500/10",
 			textColor: "text-indigo-500",
 			borderColor: "bg-[radial-gradient(#6366f1_40%,transparent_60%)]",
+		
 		},
 		{
 			icon: <TrendingUp />,
@@ -52,6 +58,7 @@ export function Features() {
 			bgGradient: "bg-rose-500/10",
 			textColor: "text-rose-500",
 			borderColor: "bg-[radial-gradient(#f43f5e_40%,transparent_60%)]",
+			
 		},
 	];
 

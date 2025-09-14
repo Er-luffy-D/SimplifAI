@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import type React from "react";
 
@@ -7,22 +7,38 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, ArrowLeft, CheckCircle, Sparkles, Brain } from "lucide-react";
+import { Mail, ArrowLeft, CheckCircle, Sparkles, Brain, XCircle } from "lucide-react";
 import Link from "next/link";
 
 export default function ForgotPasswordPage() {
 	const [email, setEmail] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
+		setIsSubmitted(false); // Reset submitted state on new attempt
+		setError(null); // Reset error state on new attempt
 
-		// Simulate API call
-		await new Promise((resolve) => setTimeout(resolve, 2000));
-		setIsLoading(false);
-		setIsSubmitted(true);
+		try {
+			// Simulate API call with a 50% chance of success or error
+			await new Promise((resolve, reject) => {
+				setTimeout(() => {
+					if (Math.random() > 0.5) {
+						resolve(null); // Success
+					} else {
+						reject(new Error("Failed to send reset link. Please try again.")); // Simulate API error
+					}
+				}, 2000);
+			});
+			setIsSubmitted(true);
+		} catch (err) {
+			setError(err.message);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
@@ -56,15 +72,46 @@ export default function ForgotPasswordPage() {
 				</div>
 
 				<Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm">
-					{!isSubmitted ? (
+					{isSubmitted ? (
+						<>
+							<CardHeader className="text-center">
+								<div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+									<CheckCircle className="w-8 h-8 text-white" />
+								</div>
+								<CardTitle className="text-2xl text-white">Check your email</CardTitle>
+								<CardDescription className="text-zinc-400">
+									We&apos;ve sent a password reset link to <strong className="text-white">{email}</strong>
+								</CardDescription>
+							</CardHeader>
+							<CardContent className="text-center space-y-4">
+								<p className="text-sm text-zinc-400">
+									Didn&apos;t receive the email? Check your spam folder or{" "}
+									<button
+										onClick={() => {
+											setIsSubmitted(false);
+											setError(null);
+										}}
+										className="text-purple-400 hover:text-purple-300 underline"
+									>
+										try again
+									</button>
+								</p>
+							</CardContent>
+						</>
+					) : (
 						<>
 							<CardHeader className="space-y-1">
 								<CardTitle className="text-2xl text-center text-white">Reset Password</CardTitle>
 								<CardDescription className="text-center text-zinc-400">
 									Enter your email address and we&apos;ll send you a link to reset your password
 								</CardDescription>
+								{error && (
+									<div className="flex items-center justify-center text-sm font-medium text-red-400 space-x-2">
+										<XCircle className="w-4 h-4" />
+										<span>{error}</span>
+									</div>
+								)}
 							</CardHeader>
-
 							<CardContent>
 								<form onSubmit={handleSubmit} className="space-y-4">
 									<div className="space-y-2">
@@ -84,7 +131,6 @@ export default function ForgotPasswordPage() {
 											/>
 										</div>
 									</div>
-
 									<Button
 										type="submit"
 										className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium"
@@ -102,32 +148,7 @@ export default function ForgotPasswordPage() {
 								</form>
 							</CardContent>
 						</>
-					) : (
-						<>
-							<CardHeader className="text-center">
-								<div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
-									<CheckCircle className="w-8 h-8 text-white" />
-								</div>
-								<CardTitle className="text-2xl text-white">Check your email</CardTitle>
-								<CardDescription className="text-zinc-400">
-									We&apos;ve sent a password reset link to <strong className="text-white">{email}</strong>
-								</CardDescription>
-							</CardHeader>
-
-							<CardContent className="text-center space-y-4">
-								<p className="text-sm text-zinc-400">
-									Didn&apos;t receive the email? Check your spam folder or{" "}
-									<button
-										onClick={() => setIsSubmitted(false)}
-										className="text-purple-400 hover:text-purple-300 underline"
-									>
-										try again
-									</button>
-								</p>
-							</CardContent>
-						</>
 					)}
-
 					<CardFooter>
 						<Link
 							href="/signin"

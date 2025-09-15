@@ -9,6 +9,26 @@ Transform your documents into flashcards, summaries, and quizzes with cutting-ed
 
 ---
 
+<details>
+  <summary><strong>📑 Table of Contents</strong></summary>
+
+  - [✨ What is Simplifai?](#-what-is-simplifai)
+  - [🌟 Features](#-features)
+  - [🖼️ Screenshots](#️-screenshots)
+  - [🚀 Getting Started](#-getting-started)
+  - [🤖 How It Works](#-how-it-works)
+  - [💡 Why Simplifai?](#-why-simplifai)
+  - [🛠️ Roadmap](#️-roadmap)
+  - [🤝 Contributing](#-contributing)
+  - [🧑‍💻 Author](#-author)
+  - [🐳 Run Locally with Docker](#-run-locally-with-docker)
+  - [📄 License](#-license)
+  - [⭐️ Star this repo if you like it!](#️-star-this-repo-if-you-like-it)
+
+</details>
+
+---
+
 ## ✨ What is Simplifai?
 
 Simplifai is an open-source, AI-powered platform that revolutionizes learning by turning your documents (PDF, TXT) into concise summaries, interactive flashcards, and quizzes—instantly.
@@ -37,8 +57,10 @@ Whether you’re a student, teacher, or lifelong learner, Simplifai makes learni
 <br><br>
 ![image](https://github.com/user-attachments/assets/06b08719-a6c8-4cd1-9b93-755fe6de6d11)
 <br><br>
-<p>Demo video </p>
-https://github.com/user-attachments/assets/8db3f7ca-6e1d-4e01-bc5c-d844c77baaa6
+
+<p>Want to see how SimplifAI works in real time?</p>
+
+👉 [Click here to watch the demo video](https://github.com/user-attachments/assets/8db3f7ca-6e1d-4e01-bc5c-d844c77baaa6)
 
 ---
 
@@ -220,4 +242,4 @@ MIT License. See [LICENSE](LICENSE).
 
 _Accelerate your learning. Empower your future. — Simplifai Team_
 
-
+---

@@ -14,152 +14,75 @@ export default function CustomCursor() {
 
 		const cursor = cursorRef.current;
 		const follower = followerRef.current;
-
 		if (!cursor || !follower) return;
 
+		// Mouse move tracking
 		const handleMouseMove = (e: MouseEvent) => {
-			// Faster, more accurate cursor tracking
-			gsap.to(cursor, {
+			// Instant cursor
+			gsap.set(cursor, {
 				x: e.clientX,
 				y: e.clientY,
-				duration: 0.05,
-				ease: "none",
 			});
 
+			// Faster, smoother follower
 			gsap.to(follower, {
 				x: e.clientX,
 				y: e.clientY,
-				duration: 0.3,
-				ease: "power1.out",
+				duration: 0.12, // very short
+				ease: "none", // no slow easing
+				overwrite: true, // kill old tweens (avoids lag stacking)
 			});
 		};
 
+		// Hover effects
 		const handleMouseEnter = (e: Event) => {
 			const target = e.target as HTMLElement | null;
-			// Check for different cursor types
 			if (!(target instanceof HTMLElement)) return;
-			if (target?.closest('[data-cursor="hover"]')) {
+
+			if (target.closest('[data-cursor="hover"]')) {
 				setIsHovering(true);
 				setCursorVariant("hover");
-
-				gsap.to(cursor, {
-					scale: 0.4,
-					duration: 0.2,
-					ease: "power2.out",
-				});
-
-				gsap.to(follower, {
-					scale: 2.2,
-					duration: 0.2,
-					ease: "power2.out",
-				});
-			} else if (target?.closest('button, a, [role="button"]')) {
+				gsap.to([cursor, follower], { scale: 1.5, duration: 0.15, ease: "power2.out" });
+			} else if (target.closest("button, a, [role='button']")) {
 				setIsHovering(true);
 				setCursorVariant("button");
-
-				gsap.to(cursor, {
-					scale: 0.6,
-					duration: 0.2,
-					ease: "power2.out",
-				});
-
-				gsap.to(follower, {
-					scale: 1.6,
-					duration: 0.2,
-					ease: "power2.out",
-				});
-			} else if (target?.closest("input, textarea")) {
+				gsap.to([cursor, follower], { scale: 1.3, duration: 0.15, ease: "power2.out" });
+			} else if (target.closest("input, textarea")) {
 				setIsHovering(true);
 				setCursorVariant("text");
-
-				gsap.to(cursor, {
-					scale: 0.8,
-					duration: 0.2,
-					ease: "power2.out",
-				});
-
-				gsap.to(follower, {
-					scale: 1.2,
-					duration: 0.2,
-					ease: "power2.out",
-				});
+				gsap.to([cursor, follower], { scale: 1.2, duration: 0.15, ease: "power2.out" });
 			}
 		};
 
-		const handleMouseLeave = (e: Event) => {
-			const target = e.target as HTMLElement | null;
-			if (!(target instanceof HTMLElement)) return;
-			if (target?.closest('[data-cursor="hover"], button, a, [role="button"], input, textarea')) {
-				setIsHovering(false);
-				setCursorVariant("default");
-
-				gsap.to(cursor, {
-					scale: 1,
-					duration: 0.2,
-					ease: "power2.out",
-				});
-
-				gsap.to(follower, {
-					scale: 1,
-					duration: 0.2,
-					ease: "power2.out",
-				});
-			}
+		const handleMouseLeave = () => {
+			setIsHovering(false);
+			setCursorVariant("default");
+			gsap.to([cursor, follower], { scale: 1, duration: 0.15, ease: "power2.out" });
 		};
 
+		// Click feedback
 		const handleMouseDown = () => {
-			gsap.to(cursor, {
-				scale: 0.7,
-				duration: 0.08,
-				ease: "power2.out",
-			});
-
-			gsap.to(follower, {
-				scale: 0.8,
-				duration: 0.08,
-				ease: "power2.out",
-			});
+			gsap.to([cursor, follower], { scale: 0.8, duration: 0.1, ease: "power2.out" });
 		};
-
 		const handleMouseUp = () => {
-			gsap.to(cursor, {
-				scale: isHovering ? (cursorVariant === "hover" ? 0.4 : cursorVariant === "button" ? 0.6 : 0.8) : 1,
-				duration: 0.08,
-				ease: "power2.out",
-			});
-
-			gsap.to(follower, {
-				scale: isHovering ? (cursorVariant === "hover" ? 2.2 : cursorVariant === "button" ? 1.6 : 1.2) : 1,
-				duration: 0.08,
+			gsap.to([cursor, follower], {
+				scale: isHovering ? 1.3 : 1,
+				duration: 0.1,
 				ease: "power2.out",
 			});
 		};
+
+		// Hide when outside window
+		const handleLeaveWindow = () => gsap.to([cursor, follower], { opacity: 0, duration: 0.15 });
+		const handleEnterWindow = () => gsap.to([cursor, follower], { opacity: 1, duration: 0.15 });
 
 		document.addEventListener("mousemove", handleMouseMove);
 		document.addEventListener("mouseenter", handleMouseEnter, true);
 		document.addEventListener("mouseleave", handleMouseLeave, true);
 		document.addEventListener("mousedown", handleMouseDown);
 		document.addEventListener("mouseup", handleMouseUp);
-
-		// Hide cursor when leaving window
-		const handleMouseLeaveWindow = () => {
-			gsap.to([cursor, follower], {
-				opacity: 0,
-				duration: 0.2,
-				ease: "power2.out",
-			});
-		};
-
-		const handleMouseEnterWindow = () => {
-			gsap.to([cursor, follower], {
-				opacity: 1,
-				duration: 0.2,
-				ease: "power2.out",
-			});
-		};
-
-		document.addEventListener("mouseleave", handleMouseLeaveWindow);
-		document.addEventListener("mouseenter", handleMouseEnterWindow);
+		document.addEventListener("mouseleave", handleLeaveWindow);
+		document.addEventListener("mouseenter", handleEnterWindow);
 
 		return () => {
 			document.removeEventListener("mousemove", handleMouseMove);
@@ -167,14 +90,14 @@ export default function CustomCursor() {
 			document.removeEventListener("mouseleave", handleMouseLeave, true);
 			document.removeEventListener("mousedown", handleMouseDown);
 			document.removeEventListener("mouseup", handleMouseUp);
-			document.removeEventListener("mouseleave", handleMouseLeaveWindow);
-			document.removeEventListener("mouseenter", handleMouseEnterWindow);
+			document.removeEventListener("mouseleave", handleLeaveWindow);
+			document.removeEventListener("mouseenter", handleEnterWindow);
 		};
-	}, [isHovering, cursorVariant]);
+	}, [isHovering]);
 
 	return (
 		<>
-			{/* Main cursor dot */}
+			{/* Main dot */}
 			<div
 				ref={cursorRef}
 				className={`fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none z-[9999] mix-blend-difference transition-colors duration-200 ${
@@ -189,10 +112,10 @@ export default function CustomCursor() {
 				style={{ transform: "translate(-50%, -50%)" }}
 			/>
 
-			{/* Follower circle - clean bubble design without text */}
+			{/* Follower (optimized) */}
 			<div
 				ref={followerRef}
-				className={`fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9998] mix-blend-difference transition-all duration-200 ${
+				className={`fixed top-0 left-0 w-10	 h-10 rounded-full pointer-events-none z-[9998] mix-blend-difference transition-colors duration-150 ${
 					cursorVariant === "hover"
 						? "border-2 border-purple-400/60 bg-purple-400/10"
 						: cursorVariant === "button"

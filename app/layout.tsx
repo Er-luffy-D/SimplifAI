@@ -17,6 +17,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
 	title: "Simplifai - AI-Powered Learning",
 	description: "Transform your documents into flashcards, summaries, and quizzes with AI",
+	icons: {
+		icon: "/favicon.svg",
+		shortcut: "/favicon.svg",
+		apple: "/favicon.svg",
+	},
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

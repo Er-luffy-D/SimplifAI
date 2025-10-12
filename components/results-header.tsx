@@ -3,6 +3,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, FileText, Share2, Braces, MoreVertical } from "lucide-react";
 import jsPDF from "jspdf";
+import * as React from 'react';
+import * as Tooltip from '@radix-ui/react-tooltip';
+import { FaRegFilePowerpoint } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -52,6 +57,7 @@ export interface ParsedDocumentResponse {
 
 export function ResultsHeader({ parsedDocument }: { parsedDocument: ParsedDocumentResponse }) {
     if (!parsedDocument || !parsedDocument.generatedContent || parsedDocument.responseFormat != "json") return null; // should not happen, but for type checking
+    const router = useRouter();
 
     const fileName = parsedDocument.docName;
     const data = {
@@ -295,61 +301,113 @@ export function ResultsHeader({ parsedDocument }: { parsedDocument: ParsedDocume
                 .catch((error) => console.error("Error copying to clipboard:", error));
         }
     };
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setTimeout(() => {
+        router.push(`/results/${parsedDocument.id}/slide`);
+      });
+    };
 
     return (
-        <div className="sticky top-0 z-10 bg-background border-b">
-            <div className="container flex items-center justify-between h-16 px-4 mx-auto">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" asChild data-cursor="hover" data-cursor-text="Back to Home">
-                        <Link href="/">
-                            <ArrowLeft className="w-5 h-5" />
-                            <span className="sr-only">Back</span>
-                        </Link>
-                    </Button>
-                    <div className="flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-primary" />
-                        <span className="font-medium truncate max-w-[200px] md:max-w-md">{fileName}</span>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="hidden sm:flex bg-red-400 hover:bg-red-500 border-red-200 text-white hover:text-blue-500 rounded-r-none border-r-0"
-                            onClick={handleExportPDF}
-                            data-cursor="hover"
-                            data-cursor-text="Export as PDF"
-                        >
-                            <FileText className="w-4 h-4 mr-2" />
-                            Export
-                        </Button>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-white hover:text-blue-500 rounded-l-none px-2"
-                                    data-cursor="hover"
-                                    data-cursor-text="Export Options"
-                                >
-                                    <MoreVertical className="w-3 h-3" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={handleExportJSON} className="cursor-pointer ring-2 ring-slate-400/40">
-                                    <Braces className="w-4 h-4 mr-2" />
-                                    Export as JSON
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                    <Button variant="outline" size="sm" className="hidden sm:flex" onClick={handleShare} data-cursor="hover" data-cursor-text="Share Results">
-                        <Share2 className="w-4 h-4 mr-2" />
-                        Share
-                    </Button>
-                </div>
+      <div className='sticky top-0 z-10 bg-background border-b'>
+        <div className='container flex items-center justify-between h-16 px-4 mx-auto'>
+          <div className='flex items-center gap-4'>
+            <Button
+              variant='ghost'
+              size='icon'
+              asChild
+              data-cursor='hover'
+              data-cursor-text='Back to Home'
+            >
+              <Link href='/'>
+                <ArrowLeft className='w-5 h-5' />
+                <span className='sr-only'>Back</span>
+              </Link>
+            </Button>
+            <div className='flex items-center gap-2'>
+              <FileText className='w-5 h-5 text-primary' />
+              <span className='font-medium truncate max-w-[200px] md:max-w-md'>
+                {fileName}
+              </span>
             </div>
+          </div>
+          <div className='flex items-center gap-2'>
+            <div>
+              <Button
+                onClick={handleSubmit}
+                className='hover:text-blue-500'
+                variant='outline'
+                size='sm'
+              >
+                <Tooltip.Provider>
+                  <Tooltip.Root delayDuration={0}>
+                    <Tooltip.Trigger asChild>
+                      <div className='flex items-center'>
+                        <FaRegFilePowerpoint />
+                        <span className='pl-[15px]'>Slides</span>
+                      </div>
+                    </Tooltip.Trigger>
+                    <Tooltip.Portal>
+                      <Tooltip.Content
+                        className='bg-black p-[6px]'
+                        sideOffset={13}
+                      >
+                        Create slides
+                        <Tooltip.Arrow className='!fill-black' />
+                      </Tooltip.Content>
+                    </Tooltip.Portal>
+                  </Tooltip.Root>
+                </Tooltip.Provider>
+              </Button>
+            </div>
+            <div className='flex items-center'>
+              <Button
+                variant='outline'
+                size='sm'
+                className='hidden sm:flex bg-red-400 hover:bg-red-500 border-red-200 text-white hover:text-blue-500 rounded-r-none border-r-0'
+                onClick={handleExportPDF}
+                data-cursor='hover'
+                data-cursor-text='Export as PDF'
+              >
+                <FileText className='w-4 h-4 mr-2' />
+                Export
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='hidden sm:flex bg-red-50 hover:bg-red-100 border-red-200 text-white hover:text-blue-500 rounded-l-none px-2'
+                    data-cursor='hover'
+                    data-cursor-text='Export Options'
+                  >
+                    <MoreVertical className='w-3 h-3' />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align='end'>
+                  <DropdownMenuItem
+                    onClick={handleExportJSON}
+                    className='cursor-pointer ring-2 ring-slate-400/40'
+                  >
+                    <Braces className='w-4 h-4 mr-2' />
+                    Export as JSON
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <Button
+              variant='outline'
+              size='sm'
+              className='hidden sm:flex'
+              onClick={handleShare}
+              data-cursor='hover'
+              data-cursor-text='Share Results'
+            >
+              <Share2 className='w-4 h-4 mr-2' />
+              Share
+            </Button>
+          </div>
         </div>
+      </div>
     );
 }

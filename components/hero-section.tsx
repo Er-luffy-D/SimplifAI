@@ -11,22 +11,9 @@ export function HeroSection() {
 	return (
 		//Hero Bg Update - Devika Harshey
 		<div className="relative bg-gradient-to-br from-primary/5 via-purple-950/20 to-pink-950/10 pt-28 sm:pt-20 pb-16 overflow-hidden">
-			{/* Floating elements */}
-			<div className="absolute top-20 left-10 animate-bounce-slow">
-				<Brain className="w-8 h-8 text-purple-400 opacity-60" />
-			</div>
-			<div className="absolute top-32 right-16 animate-bounce-slower">
-				<Sparkles className="w-6 h-6 text-pink-400 opacity-60" />
-			</div>
-			<div className="absolute hidden sm:block bottom-10 left-20 animate-bounce">
-				<Rocket className="w-10 h-10 text-blue-400 opacity-60" />
-			</div>
 
 			<div className="container px-4 mx-auto text-center relative">
-				<div className="inline-flex items-center justify-center px-4 py-1.5 mb-9 sm:mb-6 text-sm font-medium rounded-full bg-primary/20 text-primary border border-primary/20 animate-pulse-gentle">
-					<Zap className="w-4 h-4 mr-2 animate-spin-slow" />
-					Powered by AI
-				</div>
+				
 
 				<h1 className="text-[40px] font-extrabold tracking-tight sm:text-5xl md:text-6xl animate-fade-in-up">
 					Simplify your learning with <span className="text-gradient-purple-pink">Simplifai</span>

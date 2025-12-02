@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Sparkles, Brain, Check, X, Chrome } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Sparkles, Brain, Check, X, Chrome, Wand2, Copy } from "lucide-react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { Toast } from "@/components/toasts";
@@ -16,6 +16,9 @@ export default function SignUpPage() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [showGenerator, setShowGenerator] = useState(false);
+	const [generatedPassword, setGeneratedPassword] = useState("");
+	const [copied, setCopied] = useState(false);
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
@@ -24,12 +27,63 @@ export default function SignUpPage() {
 	});
 	const [toast, setToast] = useState<{ message: string; type: "error" | "success" } | null>(null);
 
+	// Password generator settings
+	const [passwordLength, setPasswordLength] = useState(16);
+	const [includeUpper, setIncludeUpper] = useState(true);
+	const [includeLower, setIncludeLower] = useState(true);
+	const [includeNumbers, setIncludeNumbers] = useState(true);
+	const [includeSymbols, setIncludeSymbols] = useState(true);
+
 	const passwordRequirements = [
 		{ text: "At least 8 characters", met: formData.password.length >= 8 },
 		{ text: "Contains uppercase letter", met: /[A-Z]/.test(formData.password) },
 		{ text: "Contains lowercase letter", met: /[a-z]/.test(formData.password) },
 		{ text: "Contains number", met: /\d/.test(formData.password) },
 	];
+
+	// Generate random password
+	const generatePassword = () => {
+		const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		const lower = 'abcdefghijklmnopqrstuvwxyz';
+		const numbers = '0123456789';
+		const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+		let chars = '';
+		if (includeUpper) chars += upper;
+		if (includeLower) chars += lower;
+		if (includeNumbers) chars += numbers;
+		if (includeSymbols) chars += symbols;
+
+		if (chars === '') {
+			setToast({ message: "Please select at least one character type", type: "error" });
+			return;
+		}
+
+		let newPassword = '';
+		for (let i = 0; i < passwordLength; i++) {
+			newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+
+		setGeneratedPassword(newPassword);
+	};
+
+	// Use generated password
+	const useGeneratedPassword = () => {
+		if (!generatedPassword) {
+			setToast({ message: "Please generate a password first", type: "error" });
+			return;
+		}
+		setFormData({ ...formData, password: generatedPassword, confirmPassword: generatedPassword });
+		setShowGenerator(false);
+		setToast({ message: "Password applied successfully!", type: "success" });
+	};
+
+	// Copy to clipboard
+	const copyToClipboard = () => {
+		navigator.clipboard.writeText(generatedPassword);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
+	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -166,9 +220,120 @@ export default function SignUpPage() {
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="password" className="text-zinc-300">
-									Password
-								</Label>
+								<div className="flex items-center justify-between">
+									<Label htmlFor="password" className="text-zinc-300">
+										Password
+									</Label>
+									<button
+										type="button"
+										onClick={() => setShowGenerator(!showGenerator)}
+										className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1"
+									>
+										<Wand2 className="w-3 h-3" />
+										Generate Password
+									</button>
+								</div>
+
+								{/* Password Generator Panel */}
+								{showGenerator && (
+									<div className="bg-zinc-800/70 border border-zinc-700 rounded-lg p-4 space-y-3 mb-2">
+										<div className="flex items-center gap-2">
+											<Input
+												type="text"
+												value={generatedPassword}
+												readOnly
+												placeholder="Click generate"
+												className="flex-1 bg-zinc-900 border-zinc-700 text-white text-sm"
+											/>
+											{generatedPassword && (
+												<button
+													type="button"
+													onClick={copyToClipboard}
+													className="p-2 bg-zinc-700 hover:bg-zinc-600 rounded transition"
+												>
+													<Copy className="w-4 h-4 text-zinc-300" />
+												</button>
+											)}
+										</div>
+
+										{copied && <p className="text-xs text-green-400">✓ Copied!</p>}
+
+										<div>
+											<label className="text-xs text-zinc-400 block mb-1">
+												Length: {passwordLength}
+											</label>
+											<input
+												type="range"
+												min="8"
+												max="32"
+												value={passwordLength}
+												onChange={(e) => setPasswordLength(parseInt(e.target.value))}
+												className="w-full h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
+											/>
+										</div>
+
+										<div className="grid grid-cols-2 gap-2 text-xs">
+											<label className="flex items-center gap-2 text-zinc-300 cursor-pointer">
+												<input
+													type="checkbox"
+													checked={includeUpper}
+													onChange={(e) => setIncludeUpper(e.target.checked)}
+													className="w-3 h-3 rounded border-zinc-600 bg-zinc-800"
+												/>
+												Uppercase
+											</label>
+											<label className="flex items-center gap-2 text-zinc-300 cursor-pointer">
+												<input
+													type="checkbox"
+													checked={includeLower}
+													onChange={(e) => setIncludeLower(e.target.checked)}
+													className="w-3 h-3 rounded border-zinc-600 bg-zinc-800"
+												/>
+												Lowercase
+											</label>
+											<label className="flex items-center gap-2 text-zinc-300 cursor-pointer">
+												<input
+													type="checkbox"
+													checked={includeNumbers}
+													onChange={(e) => setIncludeNumbers(e.target.checked)}
+													className="w-3 h-3 rounded border-zinc-600 bg-zinc-800"
+												/>
+												Numbers
+											</label>
+											<label className="flex items-center gap-2 text-zinc-300 cursor-pointer">
+												<input
+													type="checkbox"
+													checked={includeSymbols}
+													onChange={(e) => setIncludeSymbols(e.target.checked)}
+													className="w-3 h-3 rounded border-zinc-600 bg-zinc-800"
+												/>
+												Symbols
+											</label>
+										</div>
+
+										<div className="flex gap-2">
+											<Button
+												type="button"
+												onClick={generatePassword}
+												className="flex-1 bg-purple-600 hover:bg-purple-700 text-white text-sm"
+												size="sm"
+											>
+												<Wand2 className="w-3 h-3 mr-1" />
+												Generate
+											</Button>
+											<Button
+												type="button"
+												onClick={useGeneratedPassword}
+												className="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm"
+												size="sm"
+												disabled={!generatedPassword}
+											>
+												Use Password
+											</Button>
+										</div>
+									</div>
+								)}
+
 								<div className="relative">
 									<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
 									<Input

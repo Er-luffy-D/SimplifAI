@@ -4,13 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Star, Zap, Crown, Rocket, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import MobileMenu from "@/components/MobileMenu";
+import MobileMenu from "@/components/MobileMenu"; // Assuming this component is correctly implemented to accept an onClose prop
 import { useScrollAnimations } from "@/hooks/useScrollAnimations";
 import MagneticButton from "@/components/MagneticButton";
 
 export default function PricingPage() {
 	const containerRef = useScrollAnimations();
 	const [menuOpen, setMenuOpen] = useState(false);
+
 	const plans = [
 		{
 			name: "Free",
@@ -112,6 +113,11 @@ export default function PricingPage() {
 		},
 	];
 
+	// Function to handle menu closing. It will be passed to MobileMenu and potentially to navigation links.
+	const handleCloseMenu = () => {
+		setMenuOpen(false);
+	};
+
 	return (
 		<div ref={containerRef} className="min-h-screen bg-black text-white">
 			{/* Animated background with parallax */}
@@ -127,17 +133,19 @@ export default function PricingPage() {
 					<div className="flex items-center justify-between">
 						<Link
 							href="/"
-							className="text-2xl  hidden md:flex font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+							className="text-2xl hidden md:flex font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
 						>
 							Simplifai
 						</Link>
 						<div
-							className="text-2xl md:hidden  font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+							className="text-2xl md:hidden font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
 							onClick={() => setMenuOpen(!menuOpen)}
 						>
 							Simplifai
 						</div>
-						{menuOpen && <MobileMenu onClose={() => setMenuOpen(false)} />}
+
+						{/* Mobile Menu - Pass the onClose handler */}
+						{menuOpen && <MobileMenu onClose={handleCloseMenu} />}
 
 						<nav className="hidden md:flex space-x-8">
 							<Link href="/" className="text-gray-300 hover:text-white transition-colors duration-300">
@@ -302,7 +310,8 @@ export default function PricingPage() {
 											}`}
 											size="lg"
 											cursorText={plan.cta}
-											onClick={() => {}}
+											// Add onClick handler here to close menu if needed for specific CTAs
+											onClick={handleCloseMenu}
 											data-animate="scale-in"
 										>
 											{plan.cta}
@@ -358,7 +367,7 @@ export default function PricingPage() {
 								<MagneticButton
 									size="lg"
 									className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold px-8 py-4 h-auto shadow-lg shadow-purple-500/25"
-									onClick={() => {}}
+									onClick={handleCloseMenu} // Close menu on CTA click
 									cursorText="Start Trial"
 								>
 									Start Free Trial
@@ -367,7 +376,7 @@ export default function PricingPage() {
 									size="lg"
 									variant="outline"
 									className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-gray-500 px-8 py-4 h-auto"
-									onClick={() => {}}
+									onClick={handleCloseMenu} // Close menu on CTA click
 									cursorText="Schedule Demo"
 								>
 									Schedule Demo

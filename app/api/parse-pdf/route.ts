@@ -33,6 +33,11 @@ export async function POST(req: NextRequest) {
 
 	const buffer = Buffer.from(await file.arrayBuffer());
 
+	// Approximate upper bound: 4 characters per token, limit to 12 000 tokens
+	// to stay within the model context window and prevent request timeouts on
+	// very large documents.
+	const MAX_CHARS = 48_000;
+
 	try {
 		let textContent = "";
 
@@ -43,6 +48,15 @@ export async function POST(req: NextRequest) {
 			textContent = buffer.toString("utf-8");
 		} else {
 			return new Response(JSON.stringify({ error: "Unsupported file type" }), { status: 415 });
+		}
+
+		if (textContent.length > MAX_CHARS) {
+			return new Response(
+				JSON.stringify({
+					error: `Document is too long to process (${textContent.length.toLocaleString()} characters). Please upload a shorter document (maximum ~48 000 characters / ~12 000 tokens).`,
+				}),
+				{ status: 413, headers: { "Content-Type": "application/json" } },
+			);
 		}
 
 		// save the raw document content

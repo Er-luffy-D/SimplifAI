@@ -17,9 +17,21 @@ export async function POST(req: NextRequest) {
 	// Convert to Buffer
 	const buffer = Buffer.from(await file.arrayBuffer());
 
+	// Same 48 000-character limit as parse-pdf to prevent timeouts.
+	const MAX_CHARS = 48_000;
+
 	try {
 		if (fileType === "application/pdf") {
 			const data = await pdfParse(buffer);
+
+			if (data.text.length > MAX_CHARS) {
+				return new Response(
+					JSON.stringify({
+						error: `Document is too long to process (${data.text.length.toLocaleString()} characters). Please upload a shorter document (maximum ~48 000 characters / ~12 000 tokens).`,
+					}),
+					{ status: 413, headers: { "Content-Type": "application/json" } },
+				);
+			}
 
 			const openRouterPayload = {
 				model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
@@ -57,6 +69,15 @@ export async function POST(req: NextRequest) {
 			}
 		} else if (fileType === "text/plain") {
 			const text = buffer.toString("utf-8");
+
+			if (text.length > MAX_CHARS) {
+				return new Response(
+					JSON.stringify({
+						error: `Document is too long to process (${text.length.toLocaleString()} characters). Please upload a shorter document (maximum ~48 000 characters / ~12 000 tokens).`,
+					}),
+					{ status: 413, headers: { "Content-Type": "application/json" } },
+				);
+			}
 
 			const openRouterPayload = {
 				model: "deepseek/deepseek-r1-0528-qwen3-8b:free",

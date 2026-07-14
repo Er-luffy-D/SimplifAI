@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import StoreProvider from "./store-provider";
 import { SessionProviderC } from "@/components/SessionProviderC";
 import { LoadingProvider } from "@/components/loading-provider";
-import { Footer } from "@/components/footer";
+import FooterWrapper from '@/components/FooterWrapper';
 import LenisProvider from "@/components/LenisProvider";
 import CustomCursor from "@/components/CustomCursor";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -21,27 +21,32 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<body className={inter.className}>
-				<Analytics />
-				<SpeedInsights />
-				<ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange={false}>
-					<LoadingProvider>
-						<SessionProviderC>
-							<StoreProvider>
-								<LenisProvider>
-									<CustomCursor />
-									<ScrollProgress />
-									<div className="flex flex-col min-h-screen">
-										<main className="flex-1">{children}</main>
-										<Footer />
-									</div>
-								</LenisProvider>
-							</StoreProvider>
-						</SessionProviderC>
-					</LoadingProvider>
-				</ThemeProvider>
-			</body>
-		</html>
-	);
+    <html lang='en' suppressHydrationWarning>
+      <body className={inter.className}>
+        <Analytics />
+        <SpeedInsights />
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='dark'
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <LoadingProvider>
+            <SessionProviderC>
+              <StoreProvider>
+                <LenisProvider>
+                  <CustomCursor />
+                  <ScrollProgress />
+                  <div className='flex flex-col min-h-screen'>
+                    <main className='flex-1'>{children}</main>
+                    <FooterWrapper />
+                  </div>
+                </LenisProvider>
+              </StoreProvider>
+            </SessionProviderC>
+          </LoadingProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }

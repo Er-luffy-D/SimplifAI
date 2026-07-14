@@ -1,0 +1,544 @@
+<div className=' h-[85vh] w-[19vw] flex flex-col pl-[9px] pt-[12px] pr-[9px] overflow-y-hidden'>
+          {binaryTreeNotes.map((note, index) => (
+            <div
+              key={index}
+              className='rounded-xl h-[20vh] w-[18vw] p-[8px] flex flex-row bg-inherit hover:bg-[#444444]'
+            >
+              <div className='h-[18vh] w-[0.9vw] pt-[4px] font-medium text-[12px] leading-[16px]'>
+                {index + 1}
+              </div>
+              <div
+                className=' group p-3 bg-white h-[18vh] w-[16vw] rounded-xl'
+                onClick={() => setSelectedIndex(index)}
+              >
+                <div className='h-[16px] w-[16px] text-black float-right invisible hover:visible'>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        className='h-[16px] w-[16px]text-black float-right invisible group-hover:visible rounded-full '
+                        data-cursor='hover'
+                        data-cursor-text='Export Options'
+                      >
+                        <BsThreeDotsVertical className='w-2 h-2' />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align='start'>
+                      <DropdownMenuItem className='cursor-pointer'>
+                        <MdAddCircle className='w-4 h-4 mr-2' />
+                        Add
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className='cursor-pointer'>
+                        <MdDelete className='w-4 h-4 mr-2' />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <h2 className='text-[5px] text-black font-bold text-center mt-[7px] mb-[5px]'>
+                  {note.title}
+                </h2>
+                {Array.isArray(note.content) ? (
+                  <ul className='list-disc pl-6 space-y-1'>
+                    {note.content.map((item, i) => (
+                      <li
+                        key={i}
+                        className='text-[5px] text-gray-700 text-left'
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className=' flex text-[5px] text-gray-700 whitespace-pre-wrap pl-[10px] text-justify'>
+                    {note.content}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { MdAddCircle } from 'react-icons/md';
+import { MdDelete } from 'react-icons/md';
+import { IoClose } from 'react-icons/io5';
+import * as Dialog from '@radix-ui/react-dialog';
+          <div>
+          <Button onClick={() => setOpen(true)} variant='outline' size='sm'>
+            <Tooltip.Provider>
+              <Tooltip.Root delayDuration={0}>
+                <Tooltip.Trigger asChild>
+                  <div className='flex items-center'>
+                    <FaRegFilePowerpoint />
+                    <span className='pl-[15px]'>Slides</span>
+                  </div>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content className='bg-black p-[6px]' sideOffset={13}>
+                    Create slides
+                    <Tooltip.Arrow className='!fill-black' />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
+          </Button>
+          <Dialog.Root open={open} onOpenChange={setOpen}>
+            <Dialog.Portal>
+              <Dialog.Overlay className='fixed inset-0 backdrop-blur-[1px]' />
+              <Dialog.Content className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg shadow'>
+                <Dialog.Title className='font-bold text-lg text-black '>
+                  Presentation Outline
+                </Dialog.Title>
+                <Dialog.Description className='font-medium text-sm text-gray-700 mb-4'>
+                  Customize Your Presentation
+                </Dialog.Description>
+                <div className='w-[50vw] h-[7vh] pl-[8px] pr-[8px] bg-[#F3F5F9] rounded-lg items-center content-center border-2 !border-gray-200'>
+                  <input
+                    className='w-[39vw] h-[4vh] mr-[10px]  border-2 !border-gray-200 text-black bg-white justify-center border-gray-50 rounded-md'
+                    type='text'
+                  />
+                  <button
+                    variant-sm
+                    className='px-4 py-2 bg-[#A026FF] rounded-md text-white'
+                  >
+                    Regenerate Outline
+                  </button>
+                </div>
+                <div>
+                  <textarea
+                    className='mt-[15px] w-[50vw] h-[50vh]  text-black  border-1 !border-gray-300 rounded-md bh-[#F8FAFC]'
+                    required
+                  />
+                </div>
+                <div className='flex'>
+                  <Dialog.Close asChild>
+                    <button
+                      className='bg-[#A026FF] text-white rounded-[6px] mt-[25px] w-[50vw] h-[4vh]'
+                      onClick={handleSubmit}
+                    >
+                      Generate 10 Slides
+                    </button>
+                  </Dialog.Close>
+                </div>
+                <Dialog.Close asChild>
+                  <button
+                    className='w-[1vw] h-[2vh] text-black absolute top-5 right-5'
+                    aria-label='Close'
+                  >
+                    <IoClose size={24} />
+                  </button>
+                </Dialog.Close>
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
+        </div>
+
+
+
+
+
+
+        'use client';
+import { binaryTreeNotes } from '@/components/dummyresponse';
+import React, { useRef } from 'react';
+import { Stage as KonvaStage } from 'konva/lib/Stage';
+import { Stage, Layer, Group, Text } from 'react-konva';
+import useMeasure from 'react-use-measure';
+import { Button } from '@/components/ui/button';
+import jsPDF from 'jspdf';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/lib/store/index.ts';
+import { IoMdArrowRoundBack } from 'react-icons/io';
+import { LuDownload } from 'react-icons/lu';
+import * as ScrollArea from '@radix-ui/react-scroll-area';
+
+
+export default function Resultslide() {
+  const [ref, bounds] = useMeasure();
+  const fileName = useSelector((state: RootState) => state.parse.fileName);
+  const stageRef = useRef<KonvaStage | null>(null);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const router = useRouter();
+
+  const handleExportPDF = () => {
+    if (!stageRef.current) return;
+
+    const stage = stageRef.current;
+    const dataURL = stage.toDataURL({ pixelRatio: 2 });
+    var pdf = new jsPDF('l', 'px', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+     pdf.addImage(
+       dataURL,
+       "PNG",
+       0,
+       0,
+       pageWidth,
+       pageHeight
+      );
+    pdf.save('canvas.pdf');
+  }
+  return (
+    <div className='flex'>
+      <div className='w-[19vw] h-[100vh] flex flex-col border-r-1 !border-[#3B3B3B] opacity-100 bg-[#1D1E26]'>
+        <div className=' h-[15vh] w-[19vw] p-[10px] flex flex-col border-b-1 !border-[#3B3B3B]'>
+          <button
+            onClick={() => router.back()}
+            className='flex h-[5vh] items-center'
+          >
+            <IoMdArrowRoundBack className='w-[24px] h-[20px] ml-[4px]' />
+            <span className='pl-[4px] font-medium text-[14px]'>Back</span>
+          </button>
+          <div className='h-[10vh] flex  flex-col justify-between'>
+            <div className='pl-[5px] pt-[5px] truncate font-medium h-[4vh] text-[14px] leading-[16px] items-center content-center'>
+              {fileName}
+            </div>
+            <div>
+              <Button
+                variant='outline'
+                size='sm'
+                className='w-[18vw] font-medium text-[14px] leading-[16px] rounded-lg text-white hover:text-blue-500 !border-[#3B3B3B] !bg-transparent content-center'
+                onClick={handleExportPDF}
+                data-cursor='hover'
+                data-cursor-text='Export as PDF'
+              >
+                Export
+                <LuDownload className='w-[16px] h-[16px]' />
+              </Button>
+            </div>
+          </div>
+        </div>
+        <ScrollArea.Root className='h-[85vh] w-[19vw]'>
+          <ScrollArea.Viewport className='h-full w-full flex'>
+            <div className='pl-[9px] pt-[12px] pr-[9px]'>
+              {binaryTreeNotes.map((note, index) => (
+                <div
+                  key={index}
+                  className='rounded-xl h-[20vh] w-[18vw] p-[8px] flex flex-row bg-inherit hover:bg-[#3E404A]'
+                >
+                  <div className='h-[18.3vh] w-[0.9vw] pt-[4px] font-medium text-[12px] leading-[16px]'>
+                    {index + 1}
+                  </div>
+                  <div
+                    className='group p-3 bg-[#FFFFFF] h-[18.3vh] w-[16vw] rounded-xl'
+                    onClick={() => setSelectedIndex(index)}
+                  >
+                    <h2 className='text-[5px] text-[#111184] font-bold text-center mt-[7px] mb-[5px]'>
+                      {note.title}
+                    </h2>
+                    {Array.isArray(note.content) ? (
+                      <ul className='list-disc pl-6 space-y-1'>
+                        {note.content.map((item, i) => (
+                          <li
+                            key={i}
+                            className='text-[5px] text-gray-700 text-left'
+                          >
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className='flex text-[5px] text-gray-700 whitespace-pre-wrap pl-[10px] text-justify'>
+                        {note.content}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea.Viewport>
+
+          <ScrollArea.Scrollbar
+            className='flex w-2 bg-gray-900 rounded'
+            orientation='vertical'
+          >
+            <ScrollArea.Thumb className='flex-1 relative bg-red-500 rounded' />
+          </ScrollArea.Scrollbar>
+        </ScrollArea.Root>
+      </div>
+      <div className=' w-[81vw] h-[100vh] flex bg-[#000008]'>
+        {/* {binaryTreeNotes.map((slide, index: number) => ( */}
+        <div
+          className='my-15 mx-7'
+          ref={ref}
+          style={{
+            height: '88vh',
+            width: '78vw',
+            alignItems: 'center',
+            display: 'flex',
+          }}
+        >
+          <Stage
+            width={bounds.width}
+            height={bounds.height}
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: '15px',
+              margin: 'auto',
+              pointerEvents: 'none',
+            }}
+            ref={stageRef}
+          >
+            <Layer>
+              <Group>
+                <Text
+                  height={bounds.height}
+                  width={bounds.width}
+                  text={binaryTreeNotes[selectedIndex].title}
+                  fontSize={40}
+                  fontStyle='bold'
+                  fill='#111184'
+                  align='center'
+                  verticalAlign='top'
+                  letterSpacing={0}
+                  padding={60}
+                />
+                {Array.isArray(binaryTreeNotes[selectedIndex].content) ? (
+                  binaryTreeNotes[selectedIndex].content.map((item, i) => {
+                    if (typeof item === 'string') {
+                      return (
+                        <Text
+                          text={item}
+                          key={i}
+                          y={100 + i * 60}
+                          fontSize={30}
+                          lineHeight={1}
+                          width={bounds.width}
+                          height={bounds.height}
+                          fill='grey'
+                          align='left'
+                          verticalAlign='top'
+                          padding={70}
+                        />
+                      );
+                    }
+                    return '';
+                  })
+                ) : (
+                  <Text
+                    text={binaryTreeNotes[selectedIndex].content}
+                    y={50}
+                    fontSize={30}
+                    width={bounds.width}
+                    height={bounds.height}
+                    fill='grey'
+                    align='justify'
+                    verticalAlign='top'
+                    padding={100}
+                    margin='auto'
+                  />
+                )}
+              </Group>
+            </Layer>
+          </Stage>
+        </div>
+        {/* ))} */}
+      </div>
+    </div>
+  );
+}
+
+
+
+new one code full
+'use client';
+import { binaryTreeNotes } from '@/components/dummyresponse';
+import React, { useRef } from 'react';
+import { Stage as KonvaStage } from 'konva/lib/Stage';
+import { Stage, Layer, Group, Text } from 'react-konva';
+import useMeasure from 'react-use-measure';
+import { Button } from '@/components/ui/button';
+import jsPDF from 'jspdf';
+import { useRouter } from 'next/navigation';
+// import { useSelector } from 'react-redux';
+// import type { RootState } from '@/lib/store/index.ts';
+import { IoMdArrowRoundBack } from 'react-icons/io';
+import { LuDownload } from 'react-icons/lu';
+import * as ScrollArea from '@radix-ui/react-scroll-area';
+
+
+export default function Resultslide({ fileName }: { fileName: string }) {
+  const [ref, bounds] = useMeasure();
+  // const fileName = useSelector((state: RootState) => state.parse.fileName);
+  const stageRef = useRef<KonvaStage | null>(null);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const router = useRouter();
+
+  const handleExportPDF = () => {
+    if (!stageRef.current) return;
+
+    const stage = stageRef.current;
+    const dataURL = stage.toDataURL({ pixelRatio: 2 });
+    var pdf = new jsPDF('l', 'px', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    pdf.addImage(dataURL, 'PNG', 0, 0, pageWidth, pageHeight);
+    pdf.save('canvas.pdf');
+  };
+  return (
+    <div className='flex '>
+      <div className='w-[19vw] h-[100vh] flex flex-col border-r-1 !border-[#3B3B3B] opacity-100 bg-[#1D1E26] '>
+        <div className=' h-[15vh] w-[19vw] p-[10px] flex flex-col border-b-1 !border-[#3B3B3B]'>
+          <button
+            onClick={() => router.back()}
+            className='flex h-[5vh] items-center'
+          >
+            <IoMdArrowRoundBack className='w-[24px] h-[20px] ml-[4px]' />
+            <span className='pl-[4px] font-medium text-[14px]'>Back</span>
+          </button>
+          <div className='h-[10vh] flex  flex-col justify-between'>
+            <div className='pl-[5px] pt-[5px] truncate font-medium h-[4vh] text-[14px] leading-[16px] items-center content-center'>
+              {fileName}
+            </div>
+            <div>
+              <Button
+                variant='outline'
+                size='sm'
+                className='w-[18vw] font-medium text-[14px] leading-[16px] rounded-lg text-white hover:text-blue-500 !border-[#3B3B3B] !bg-transparent content-center'
+                onClick={handleExportPDF}
+                data-cursor='hover'
+                data-cursor-text='Export as PDF'
+              >
+                Export
+                <LuDownload className='w-[16px] h-[16px]' />
+              </Button>
+            </div>
+          </div>
+        </div>
+        {/* <ScrollArea.Root className='h-[85vh] w-[19vw]'>
+          <ScrollArea.Viewport className='h-full w-full overflow-hidden overflow-y-auto'> */}
+        <div className=' h-[85vh] w-[19vw] overflow-x-hidden overflow-y-auto scroll-smooth pl-[9px] pt-[12px] pr-[9px] '>
+          {binaryTreeNotes.map((note, index) => (
+            <div
+              key={index}
+              className='rounded-xl h-[20vh] w-[18vw] p-[8px] flex flex-row bg-inherit hover:bg-[#3E404A]'
+            >
+              <div className='h-[18.3vh] w-[0.9vw] pt-[4px] font-medium text-[12px] leading-[16px]'>
+                {index + 1}
+              </div>
+              <div
+                className='group p-3 bg-[#FFFFFF] h-[18.3vh] w-[16vw] rounded-xl cursor-pointer'
+                onClick={() => setSelectedIndex(index)}
+              >
+                <h2 className='text-[5px] text-[#111184] font-bold text-center mt-[7px] mb-[5px]'>
+                  {note.title}
+                </h2>
+                {Array.isArray(note.content) ? (
+                  <ul className='list-disc pl-6 space-y-1'>
+                    {note.content.map((item, i) => (
+                      <li
+                        key={i}
+                        className='text-[5px] text-gray-700 text-left'
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className='flex text-[5px] text-gray-700 whitespace-pre-wrap pl-[10px] text-justify'>
+                    {note.content}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* </ScrollArea.Viewport> */}
+
+        {/* <ScrollArea.Scrollbar
+            className='flex w-2 bg-gray-900 rounded'
+            orientation='vertical'
+          >
+            <ScrollArea.Thumb className='flex-1 relative bg-red-500 rounded' />
+          </ScrollArea.Scrollbar> */}
+        {/* </ScrollArea.Root> */}
+      </div>
+      <div className=' w-[81vw] h-[100vh] flex bg-[#000008]'>
+        {/* {binaryTreeNotes.map((slide, index: number) => ( */}
+        <div
+          className='my-15 mx-7'
+          ref={ref}
+          style={{
+            height: '88vh',
+            width: '78vw',
+            alignItems: 'center',
+            display: 'flex',
+          }}
+        >
+          <Stage
+            width={bounds.width}
+            height={bounds.height}
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: '15px',
+              margin: 'auto',
+            }}
+            ref={stageRef}
+          >
+            <Layer>
+              <Group>
+                <Text
+                  height={bounds.height}
+                  width={bounds.width}
+                  text={binaryTreeNotes[selectedIndex].title}
+                  fontSize={40}
+                  fontStyle='bold'
+                  fill='#111184'
+                  align='center'
+                  verticalAlign='top'
+                  letterSpacing={0}
+                  padding={60}
+                />
+                {Array.isArray(binaryTreeNotes[selectedIndex].content) ? (
+                  binaryTreeNotes[selectedIndex].content.map((item, i) => {
+                    if (typeof item === 'string') {
+                      return (
+                        <Text
+                          text={item}
+                          key={i}
+                          y={100 + i * 60}
+                          fontSize={30}
+                          lineHeight={1}
+                          width={bounds.width}
+                          height={bounds.height}
+                          fill='grey'
+                          align='left'
+                          verticalAlign='top'
+                          padding={70}
+                        />
+                      );
+                    }
+                    return '';
+                  })
+                ) : (
+                  <Text
+                    text={binaryTreeNotes[selectedIndex].content}
+                    y={50}
+                    fontSize={30}
+                    width={bounds.width}
+                    height={bounds.height}
+                    fill='grey'
+                    align='justify'
+                    verticalAlign='top'
+                    padding={100}
+                    margin='auto'
+                  />
+                )}
+              </Group>
+            </Layer>
+          </Stage>
+        </div>
+        {/* ))} */}
+      </div>
+    </div>
+  );
+}

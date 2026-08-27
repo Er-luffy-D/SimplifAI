@@ -2,7 +2,7 @@ import type React from "react";
 import Link from "next/link";
 import { Github, Linkedin, Mail, Heart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { SiX as Twitter } from "react-icons/si";
+// import { FaXTwitter as Twitter } from "react-icons/fa6";
 
 const Footer: React.FC = () => {
 	const currentYear = new Date().getFullYear();
@@ -21,11 +21,11 @@ const Footer: React.FC = () => {
 			href: "https://github.com/Er-luffy-D/SimplifAI",
 			icon: Github,
 		},
-		{
-			name: "Twitter",
-			href: "https://twitter.com",
-			icon: Twitter,
-		},
+		// {
+		// 	name: "Twitter",
+		// 	href: "https://twitter.com",
+		// 	icon: Twitter,
+		// } ,
 		{
 			name: "LinkedIn",
 			href: "https://linkedin.com",

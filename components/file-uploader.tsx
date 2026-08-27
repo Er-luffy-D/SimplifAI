@@ -219,7 +219,7 @@ export function FileUploader() {
 							</div>
 						</div>
 					)}
-					<Input id="file" type="file" className="hidden" accept=".pdf,.txt" onChange={handleFileChange} />
+					<Input id="file" type="file" className="hidden" accept=".pdf,.txt,.docx" onChange={handleFileChange} />
 					<label htmlFor="file" className="w-full h-full absolute top-0 left-0 cursor-pointer">
 						<span className="sr-only">Choose file</span>
 					</label>
